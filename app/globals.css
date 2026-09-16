@@ -93,8 +93,20 @@ textarea:focus-visible {
   min-height: 100vh;
 }
 
+.tcps-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  padding: 0.75rem 1rem 0;
+}
+
+.tcps-topbar__inner {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .page-shell {
-  min-height: 100vh;
+  min-height: calc(100vh - 4.75rem);
   padding: 1rem;
 }
 
@@ -127,6 +139,13 @@ textarea:focus-visible {
   text-align: center;
   padding: 0.95rem 1rem;
   border: 1px solid transparent;
+}
+
+.tcps-button-inline {
+  display: inline-flex;
+  width: auto;
+  align-items: center;
+  justify-content: center;
 }
 
 .tcps-button-primary {
@@ -175,10 +194,6 @@ textarea:focus-visible {
 }
 
 .tcps-theme-toggle {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 50;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -361,14 +376,18 @@ html[data-theme='dark'] .tcps-status-chip--red {
     font-size: 16px;
   }
 
-  .tcps-theme-toggle {
-    top: 0.75rem;
-    right: 0.75rem;
+  .tcps-theme-toggle__label {
+    font-size: 0.72rem;
   }
 }
 
 @media (min-width: 640px) {
+  .tcps-topbar {
+    padding: 1rem 1.5rem 0;
+  }
+
   .page-shell {
+    min-height: calc(100vh - 5rem);
     padding: 1.5rem;
   }
 }

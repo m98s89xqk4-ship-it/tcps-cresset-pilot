@@ -15,7 +15,7 @@ export default function MovementPage({ params }: { params: { athleteId: string }
   const [selectedMovement, setSelectedMovement] = useState<string | null>(null)
 
   return (
-    <div className="page-shell page-background pt-20 sm:pt-24">
+    <div className="page-shell page-background">
       <div className="mx-auto max-w-lg">
         <div className="py-6 text-center">
           <p className="tcps-eyebrow text-xs font-bold uppercase tracking-[0.22rem]">TC Performance System</p>

@@ -23,7 +23,7 @@ export default function RecoveryPage({ params }: { params: { athleteId: string }
   }))
 
   return (
-    <div className="page-shell page-background pt-20 sm:pt-24">
+    <div className="page-shell page-background">
       <div className="mx-auto max-w-2xl">
         <div className="py-6 text-center">
           <p className="tcps-eyebrow text-xs font-semibold uppercase tracking-[0.22rem]">TC Performance System</p>
@@ -102,43 +102,45 @@ export default function RecoveryPage({ params }: { params: { athleteId: string }
         {viewMode === 'lessons' && (
           <div className="mb-6 space-y-4">
             {phaseData.map(({ phase, lessons }) => (
-              <div key={phase} className="tcps-panel p-4">
-                <p className="tcps-accent mb-4 border-b pb-2 font-semibold" style={{ borderColor: 'var(--border)' }}>
+              <section key={phase} className="tcps-panel p-4" aria-labelledby={`phase-${phase}`}>
+                <p id={`phase-${phase}`} className="tcps-accent mb-4 border-b pb-2 font-semibold" style={{ borderColor: 'var(--border)' }}>
                   {phase}
                 </p>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {lessons.map((lesson) => {
                     const isCompleted = completedLessons.includes(lesson.number)
 
                     return (
-                      <div
-                        key={lesson.number}
-                        className="flex items-start justify-between gap-3 rounded-xl p-2 hover:bg-[var(--accent-soft)]"
-                      >
-                        <Link href={`/dashboard/${params.athleteId}/curriculum/${lesson.number}`} className="flex-1 text-left">
-                          <div className="flex items-start">
-                            <span className="tcps-accent mr-3 min-w-6 font-bold">{lesson.number}.</span>
-                            <div>
-                              <p className="tcps-title text-sm font-semibold">{lesson.title}</p>
-                              <p className="tcps-muted mt-1 text-xs">{lesson.description.substring(0, 80)}...</p>
-                            </div>
+                      <div key={lesson.number} className="tcps-panel-strong rounded-xl p-3">
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                          <div className="min-w-0 flex-1">
+                            <p className="tcps-title text-sm font-semibold">
+                              <span className="tcps-accent mr-2">{lesson.number}.</span>
+                              {lesson.title}
+                            </p>
+                            <p className="tcps-muted mt-1 text-xs">{lesson.description.substring(0, 80)}...</p>
                           </div>
-                        </Link>
-                        <button
-                          onClick={() => toggleLesson(lesson.number)}
-                          className={`rounded-full border text-xs font-bold ${
-                            isCompleted ? 'tcps-button-primary' : 'tcps-button-secondary'
-                          }`}
-                          style={{ width: '1.75rem', minWidth: '1.75rem', padding: 0 }}
-                          aria-label={isCompleted ? `Mark lesson ${lesson.number} incomplete` : `Mark lesson ${lesson.number} complete`}
-                        >
-                          {isCompleted ? '✓' : ''}
-                        </button>
+                          <div className="flex gap-2 sm:flex-col sm:items-end" aria-label={`Actions for lesson ${lesson.number}`}>
+                            <Link
+                              href={`/dashboard/${params.athleteId}/curriculum/${lesson.number}`}
+                              className="tcps-button-secondary tcps-button-inline text-sm"
+                            >
+                              Open
+                            </Link>
+                            <button
+                              onClick={() => toggleLesson(lesson.number)}
+                              className={`tcps-button-inline text-sm ${isCompleted ? 'tcps-button-primary' : 'tcps-button-secondary'}`}
+                              aria-label={isCompleted ? `Mark lesson ${lesson.number} incomplete` : `Mark lesson ${lesson.number} complete`}
+                            >
+                              {isCompleted ? 'Done' : 'Mark'}
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     )
                   })}
                 </div>
-              </div>
+              </section>
             ))}
 
             <div className="tcps-panel p-4">

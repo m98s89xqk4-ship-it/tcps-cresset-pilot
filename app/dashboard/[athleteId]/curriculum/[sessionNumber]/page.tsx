@@ -14,7 +14,7 @@ export default function CurriculumPage({ params }: { params: { athleteId: string
 
   if (!session) {
     return (
-      <div className="page-shell page-background pt-20 sm:pt-24">
+      <div className="page-shell page-background">
         <div className="mx-auto max-w-md py-12 text-center">
           <p className="tcps-accent mb-4 text-2xl font-bold">Lesson not found</p>
           <Link href={`/dashboard/${params.athleteId}`} className="tcps-button-secondary">
@@ -30,7 +30,7 @@ export default function CurriculumPage({ params }: { params: { athleteId: string
   const nextSession = currentIndex < curriculum.length - 1 ? curriculum[currentIndex + 1] : null
 
   return (
-    <div className="page-shell page-background pt-20 sm:pt-24">
+    <div className="page-shell page-background">
       <div className="mx-auto max-w-2xl">
         <div className="py-6 text-center">
           <p className="tcps-eyebrow text-xs font-semibold uppercase tracking-[0.22rem]">TC Performance System</p>

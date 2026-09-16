@@ -15,7 +15,7 @@ export default function Home() {
 
   if (!entered) {
     return (
-      <main className="page-shell page-background flex items-center justify-center pt-20 sm:pt-24">
+      <main className="page-shell page-background flex items-center justify-center">
         <div className="w-full max-w-md">
           <div className="mb-8 text-center">
             <p className="tcps-eyebrow text-xs font-bold uppercase tracking-[0.22rem]">TC Performance System</p>
@@ -59,7 +59,7 @@ export default function Home() {
   }
 
   return (
-    <main className="page-shell page-background pt-20 sm:pt-24">
+    <main className="page-shell page-background">
       <div className="mx-auto max-w-md px-4 py-6 sm:px-6">
         <div className="py-6 text-center">
           <p className="tcps-eyebrow text-xs font-bold uppercase tracking-[0.22rem]">TC Performance System</p>

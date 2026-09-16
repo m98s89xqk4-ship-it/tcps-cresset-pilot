@@ -35,7 +35,11 @@ export default function RootLayout({
           {themeScript}
         </Script>
         <ThemeProvider>
-          <ThemeToggle />
+          <div className="tcps-topbar">
+            <div className="tcps-topbar__inner">
+              <ThemeToggle />
+            </div>
+          </div>
           {children}
         </ThemeProvider>
       </body>
