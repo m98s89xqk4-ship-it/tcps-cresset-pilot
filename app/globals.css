@@ -140,7 +140,8 @@ textarea:focus-visible {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 12px 24px var(--shadow-color);
 }
 
-.tcps-select-card:hover {
+.tcps-select-card:hover,
+.tcps-select-card:focus-visible {
   transform: translateY(-1px);
 }
 
@@ -177,7 +178,8 @@ textarea:focus-visible {
   box-shadow: 0 12px 20px rgba(212, 175, 55, 0.2);
 }
 
-.tcps-button-primary:hover {
+.tcps-button-primary:hover,
+.tcps-button-primary:focus-visible {
   transform: translateY(-1px);
   box-shadow: 0 16px 24px rgba(212, 175, 55, 0.24);
 }
@@ -189,7 +191,9 @@ textarea:focus-visible {
 }
 
 .tcps-button-secondary:hover,
-.tcps-button-ghost:hover {
+.tcps-button-secondary:focus-visible,
+.tcps-button-ghost:hover,
+.tcps-button-ghost:focus-visible {
   background: var(--accent-soft);
 }
 
@@ -238,7 +242,8 @@ textarea:focus-visible {
   backdrop-filter: blur(14px);
 }
 
-.tcps-theme-toggle:hover {
+.tcps-theme-toggle:hover,
+.tcps-theme-toggle:focus-visible {
   transform: translateY(-1px);
   background: var(--surface);
 }

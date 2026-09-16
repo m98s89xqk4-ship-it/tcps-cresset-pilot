@@ -97,6 +97,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     applyTheme(systemTheme)
   }
 
+  const toggleTheme = () => {
+    setThemeState((currentTheme) => {
+      const nextTheme = currentTheme === 'dark' ? 'light' : 'dark'
+      setPreference(nextTheme)
+      applyTheme(nextTheme)
+      window.localStorage.setItem(THEME_STORAGE_KEY, nextTheme)
+      return nextTheme
+    })
+  }
+
   const value = useMemo(
     () => ({
       theme,
@@ -104,7 +114,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       mounted,
       setTheme,
       clearThemePreference,
-      toggleTheme: () => setTheme(theme === 'dark' ? 'light' : 'dark'),
+      toggleTheme,
     }),
     [theme, preference, mounted]
   )
