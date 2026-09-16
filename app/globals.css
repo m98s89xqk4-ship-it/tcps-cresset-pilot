@@ -243,7 +243,8 @@ textarea:focus-visible {
 }
 
 .tcps-theme-toggle:hover,
-.tcps-theme-toggle:focus-visible {
+.tcps-theme-toggle:focus-visible,
+.tcps-theme-toggle:active {
   transform: translateY(-1px);
   background: var(--surface);
 }

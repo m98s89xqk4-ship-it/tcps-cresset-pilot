@@ -29,9 +29,7 @@ export default function CurriculumPage({ params }: { params: { athleteId: string
   const currentIndex = curriculum.findIndex((entry) => entry.number === sessionNum)
   const prevSession = currentIndex > 0 ? curriculum[currentIndex - 1] : null
   const nextSession = currentIndex < curriculum.length - 1 ? curriculum[currentIndex + 1] : null
-  const progressPercent = Number.isNaN(sessionNum)
-    ? 0
-    : Math.min(Math.max((sessionNum / 15) * 100, 0), 100)
+  const progressPercent = Math.min(Math.max((session.number / 15) * 100, 0), 100)
 
   return (
     <div className="page-shell page-background">
@@ -250,7 +248,7 @@ export default function CurriculumPage({ params }: { params: { athleteId: string
           <div className="tcps-progress-track mb-2 h-2">
             <div className="tcps-progress-fill h-2 transition-all duration-300" style={{ width: `${progressPercent}%` }} />
           </div>
-          <p className="tcps-copy text-xs">{sessionNum} of 15 lessons</p>
+          <p className="tcps-copy text-xs">{session.number} of 15 lessons</p>
         </div>
       </div>
     </div>
