@@ -13,6 +13,18 @@ interface ReadinessData {
   painFlag: boolean
 }
 
+const readinessFields: Array<{
+  label: string
+  key: Exclude<keyof ReadinessData, 'painFlag'>
+}> = [
+  { label: 'Soreness', key: 'soreness' },
+  { label: 'Energy', key: 'energy' },
+  { label: 'Sleep Quality', key: 'sleepQuality' },
+  { label: 'Hydration', key: 'hydration' },
+  { label: 'Stress Level', key: 'stress' },
+  { label: 'Self Readiness', key: 'selfReadiness' },
+]
+
 export default function ReadinessPage({ params }: { params: { athleteId: string } }) {
   const [readiness, setReadiness] = useState<ReadinessData>({
     soreness: 3,
@@ -61,24 +73,17 @@ export default function ReadinessPage({ params }: { params: { athleteId: string 
         </div>
 
         <div className="mb-6 space-y-4">
-          {[
-            { label: 'Soreness', key: 'soreness' },
-            { label: 'Energy', key: 'energy' },
-            { label: 'Sleep Quality', key: 'sleepQuality' },
-            { label: 'Hydration', key: 'hydration' },
-            { label: 'Stress Level', key: 'stress' },
-            { label: 'Self Readiness', key: 'selfReadiness' },
-          ].map(({ label, key }) => (
+          {readinessFields.map(({ label, key }) => (
             <div key={key} className="tcps-panel p-4">
               <div className="mb-3 flex items-center justify-between gap-3">
                 <label className="tcps-accent text-sm font-semibold">{label}</label>
-                <span className="tcps-title text-lg font-bold">{readiness[key as keyof ReadinessData]}</span>
+                <span className="tcps-title text-lg font-bold">{readiness[key]}</span>
               </div>
               <input
                 type="range"
                 min="1"
                 max="5"
-                value={readiness[key as keyof ReadinessData]}
+                value={readiness[key]}
                 onChange={(e) => setReadiness({ ...readiness, [key]: parseInt(e.target.value, 10) })}
                 className="w-full"
                 style={{ accentColor: 'var(--accent)' }}
