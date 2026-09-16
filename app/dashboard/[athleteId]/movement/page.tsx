@@ -39,12 +39,7 @@ export default function MovementPage({ params }: { params: { athleteId: string }
                 type="button"
                 onClick={() => setSelectedMovement(movement.name)}
                 aria-pressed={isSelected}
-                className={`w-full rounded-xl border p-4 ${
-                  isSelected
-                    ? 'tcps-button-primary border-transparent shadow-[0_12px_24px_rgba(212,175,55,0.2)]'
-                    : 'tcps-panel-strong tcps-title hover:translate-y-[-1px]'
-                }`}
-                style={{ textAlign: 'left' }}
+                className={`tcps-select-card ${isSelected ? 'tcps-select-card--active' : 'tcps-panel-strong tcps-title'}`}
               >
                 <p className="text-base font-bold">{movement.name}</p>
                 <p className={`mt-1 text-xs ${isSelected ? 'opacity-75' : 'tcps-muted'}`}>{movement.category}</p>
