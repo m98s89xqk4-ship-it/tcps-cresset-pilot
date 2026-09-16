@@ -26,10 +26,11 @@ export default function CurriculumPage({ params }: { params: { athleteId: string
     )
   }
 
+  const totalLessons = curriculum.length
   const currentIndex = curriculum.findIndex((entry) => entry.number === sessionNum)
   const prevSession = currentIndex > 0 ? curriculum[currentIndex - 1] : null
-  const nextSession = currentIndex < curriculum.length - 1 ? curriculum[currentIndex + 1] : null
-  const progressPercent = Math.min(Math.max((session.number / 15) * 100, 0), 100)
+  const nextSession = currentIndex < totalLessons - 1 ? curriculum[currentIndex + 1] : null
+  const progressPercent = Math.min(Math.max((session.number / totalLessons) * 100, 0), 100)
 
   return (
     <div className="page-shell page-background">
@@ -47,7 +48,7 @@ export default function CurriculumPage({ params }: { params: { athleteId: string
             <div>
               <p className="tcps-accent mb-1 text-xs font-semibold">{session.phase}</p>
               <h2 className="tcps-title mb-2 text-3xl font-bold">{session.title}</h2>
-              <p className="tcps-accent text-sm font-semibold">Session {session.number} of 15</p>
+              <p className="tcps-accent text-sm font-semibold">Session {session.number} of {totalLessons}</p>
             </div>
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[linear-gradient(135deg,var(--accent),var(--accent-strong))] shadow-[0_10px_18px_rgba(212,175,55,0.24)]">
               <p className="text-2xl font-bold text-[var(--button-primary-text)]">{session.number}</p>
@@ -248,7 +249,7 @@ export default function CurriculumPage({ params }: { params: { athleteId: string
           <div className="tcps-progress-track mb-2 h-2">
             <div className="tcps-progress-fill h-2 transition-all duration-300" style={{ width: `${progressPercent}%` }} />
           </div>
-          <p className="tcps-copy text-xs">{session.number} of 15 lessons</p>
+          <p className="tcps-copy text-xs">{session.number} of {totalLessons} lessons</p>
         </div>
       </div>
     </div>

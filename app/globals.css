@@ -4,6 +4,7 @@
 
 :root {
   --academy-green: #134734;
+  --topbar-reserved-height: 4.75rem;
   --academy-green-deep: #0b2f22;
   --academy-green-soft: #e4efe9;
   --academy-gold: #d4af37;
@@ -106,7 +107,7 @@ textarea:focus-visible {
 }
 
 .page-shell {
-  min-height: calc(100vh - 4.75rem);
+  min-height: calc(100vh - var(--topbar-reserved-height));
   padding: 1rem;
 }
 
@@ -437,8 +438,12 @@ html[data-theme='dark'] .tcps-status-chip--red {
     padding: 1rem 1.5rem 0;
   }
 
+  :root {
+    --topbar-reserved-height: 5rem;
+  }
+
   .page-shell {
-    min-height: calc(100vh - 5rem);
+    min-height: calc(100vh - var(--topbar-reserved-height));
     padding: 1.5rem;
   }
 }
