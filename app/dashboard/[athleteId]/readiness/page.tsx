@@ -73,23 +73,30 @@ export default function ReadinessPage({ params }: { params: { athleteId: string 
         </div>
 
         <div className="mb-6 space-y-4">
-          {readinessFields.map(({ label, key }) => (
-            <div key={key} className="tcps-panel p-4">
-              <div className="mb-3 flex items-center justify-between gap-3">
-                <label className="tcps-accent text-sm font-semibold">{label}</label>
-                <span className="tcps-title text-lg font-bold">{readiness[key]}</span>
+          {readinessFields.map(({ label, key }) => {
+            const inputId = `readiness-${key}`
+
+            return (
+              <div key={key} className="tcps-panel p-4">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <label htmlFor={inputId} className="tcps-accent text-sm font-semibold">
+                    {label}
+                  </label>
+                  <span className="tcps-title text-lg font-bold">{readiness[key]}</span>
+                </div>
+                <input
+                  id={inputId}
+                  type="range"
+                  min="1"
+                  max="5"
+                  value={readiness[key]}
+                  onChange={(e) => setReadiness({ ...readiness, [key]: parseInt(e.target.value, 10) })}
+                  className="w-full"
+                  style={{ accentColor: 'var(--accent)' }}
+                />
               </div>
-              <input
-                type="range"
-                min="1"
-                max="5"
-                value={readiness[key]}
-                onChange={(e) => setReadiness({ ...readiness, [key]: parseInt(e.target.value, 10) })}
-                className="w-full"
-                style={{ accentColor: 'var(--accent)' }}
-              />
-            </div>
-          ))}
+            )
+          })}
         </div>
 
         <div className="tcps-panel mb-6 p-4">

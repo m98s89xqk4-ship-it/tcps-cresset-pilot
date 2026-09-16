@@ -193,6 +193,13 @@ textarea:focus-visible {
   color: var(--text-muted);
 }
 
+.tcps-theme-controls {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
 .tcps-theme-toggle {
   display: inline-flex;
   align-items: center;
@@ -209,6 +216,18 @@ textarea:focus-visible {
 .tcps-theme-toggle:hover {
   transform: translateY(-1px);
   background: var(--surface);
+}
+
+.tcps-theme-toggle--secondary {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tcps-theme-toggle--active {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
 }
 
 .tcps-theme-toggle__icon {
@@ -376,7 +395,8 @@ html[data-theme='dark'] .tcps-status-chip--red {
     font-size: 16px;
   }
 
-  .tcps-theme-toggle__label {
+  .tcps-theme-toggle__label,
+  .tcps-theme-toggle--secondary {
     font-size: 0.72rem;
   }
 }

@@ -36,7 +36,9 @@ export default function MovementPage({ params }: { params: { athleteId: string }
             return (
               <button
                 key={movement.name}
+                type="button"
                 onClick={() => setSelectedMovement(movement.name)}
+                aria-pressed={isSelected}
                 className={`w-full rounded-xl border p-4 ${
                   isSelected
                     ? 'tcps-button-primary border-transparent shadow-[0_12px_24px_rgba(212,175,55,0.2)]'

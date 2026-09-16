@@ -28,6 +28,7 @@ export default function CurriculumPage({ params }: { params: { athleteId: string
   const currentIndex = curriculum.findIndex((entry) => entry.number === sessionNum)
   const prevSession = currentIndex > 0 ? curriculum[currentIndex - 1] : null
   const nextSession = currentIndex < curriculum.length - 1 ? curriculum[currentIndex + 1] : null
+  const singleNavClass = !prevSession || !nextSession ? 'sm:col-span-2' : ''
 
   return (
     <div className="page-shell page-background">
@@ -220,12 +221,12 @@ export default function CurriculumPage({ params }: { params: { athleteId: string
         <div className="mb-6 space-y-3">
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             {prevSession && (
-              <Link href={`/dashboard/${params.athleteId}/curriculum/${prevSession.number}`} className="tcps-button-secondary text-sm">
+              <Link href={`/dashboard/${params.athleteId}/curriculum/${prevSession.number}`} className={`tcps-button-secondary text-sm ${singleNavClass}`}>
                 ← Previous
               </Link>
             )}
             {nextSession && (
-              <Link href={`/dashboard/${params.athleteId}/curriculum/${nextSession.number}`} className="tcps-button-primary text-sm">
+              <Link href={`/dashboard/${params.athleteId}/curriculum/${nextSession.number}`} className={`tcps-button-primary text-sm ${singleNavClass}`}>
                 Next →
               </Link>
             )}
