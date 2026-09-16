@@ -1,10 +1,7 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { ThemeToggle } from '@/components/theme-toggle'
-
-const inter = Inter({ subsets: ['latin'] })
 
 const themeScript = `
 (function () {
@@ -35,7 +32,7 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className={`${inter.className} app-shell`}>
+      <body className="app-shell">
         <ThemeProvider>
           <ThemeToggle />
           {children}
