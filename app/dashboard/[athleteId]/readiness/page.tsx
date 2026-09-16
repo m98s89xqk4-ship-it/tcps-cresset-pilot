@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { loadReadinessSnapshot, saveReadinessSnapshot } from '@/lib/athlete-readiness'
 
 interface ReadinessData {
   soreness: number
@@ -23,6 +24,33 @@ export default function ReadinessPage({ params }: { params: { athleteId: string 
     selfReadiness: 3,
     painFlag: false,
   })
+
+  useEffect(() => {
+    const saved = loadReadinessSnapshot()
+    setReadiness({
+      soreness: saved.soreness,
+      energy: saved.energy,
+      sleepQuality: saved.sleep,
+      hydration: saved.hydration,
+      stress: saved.stress,
+      selfReadiness: saved.selfReadiness,
+      painFlag: saved.painFlag,
+    })
+  }, [])
+
+  useEffect(() => {
+    saveReadinessSnapshot({
+      athleteCode: params.athleteId,
+      soreness: readiness.soreness,
+      energy: readiness.energy,
+      sleep: readiness.sleepQuality,
+      hydration: readiness.hydration,
+      stress: readiness.stress,
+      selfReadiness: readiness.selfReadiness,
+      painFlag: readiness.painFlag,
+      note: '',
+    })
+  }, [params.athleteId, readiness])
 
   const calculateScore = () => {
     const sorenessReversed = 6 - readiness.soreness
