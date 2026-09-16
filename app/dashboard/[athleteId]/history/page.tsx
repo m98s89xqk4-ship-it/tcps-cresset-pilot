@@ -11,55 +11,55 @@ export default function HistoryPage({ params }: { params: { athleteId: string } 
     { date: '4 Days Ago', readiness: 55, status: 'RED', sleep: 2, soreness: 5, energy: 2 },
   ]
 
-  const getStatusColor = (status: string) => {
-    if (status === 'GREEN') return 'text-green-400'
-    if (status === 'YELLOW') return 'text-yellow-400'
-    return 'text-red-400'
+  const getStatusClass = (status: string) => {
+    if (status === 'GREEN') return 'tcps-status-chip tcps-status-chip--green'
+    if (status === 'YELLOW') return 'tcps-status-chip tcps-status-chip--yellow'
+    return 'tcps-status-chip tcps-status-chip--red'
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black to-maroon p-4 sm:p-6">
+    <div className="page-shell page-background pt-20 sm:pt-24">
       <div className="mx-auto max-w-lg">
-        <div className="text-center py-6">
-          <p className="text-xs font-bold tracking-[0.22rem] text-gold uppercase">TC Performance System</p>
-          <h1 className="mt-2 text-3xl font-black text-white">Your History</h1>
-          <p className="mt-2 text-sm text-gray-300">
-            Athlete: <span className="font-bold text-gold">{params.athleteId}</span>
+        <div className="py-6 text-center">
+          <p className="tcps-eyebrow text-xs font-bold uppercase tracking-[0.22rem]">TC Performance System</p>
+          <h1 className="tcps-title mt-2 text-3xl font-black">Your History</h1>
+          <p className="tcps-muted mt-2 text-sm">
+            Athlete: <span className="tcps-accent font-bold">{params.athleteId}</span>
           </p>
         </div>
 
-        <div className="space-y-3 mb-6">
+        <div className="mb-6 space-y-3">
           {history.map((entry, idx) => (
             <div key={idx} className="tcps-panel p-4">
-              <div className="flex items-start justify-between mb-3">
-                <p className="text-sm font-bold text-gold">{entry.date}</p>
-                <span className={`text-sm font-bold ${getStatusColor(entry.status)}`}>{entry.status}</span>
+              <div className="mb-3 flex items-start justify-between gap-3">
+                <p className="tcps-accent text-sm font-bold">{entry.date}</p>
+                <span className={getStatusClass(entry.status)}>{entry.status}</span>
               </div>
 
-              <p className="text-3xl font-black text-white mb-3">{entry.readiness} / 100</p>
+              <p className="tcps-title mb-3 text-3xl font-black">{entry.readiness} / 100</p>
 
               <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                <div className="rounded-lg bg-black/60 p-2">
-                  <p className="text-gray-400">Sleep</p>
-                  <p className="mt-1 font-bold text-white">{entry.sleep}/5</p>
+                <div className="tcps-panel-strong p-2">
+                  <p className="tcps-muted">Sleep</p>
+                  <p className="tcps-title mt-1 font-bold">{entry.sleep}/5</p>
                 </div>
-                <div className="rounded-lg bg-black/60 p-2">
-                  <p className="text-gray-400">Soreness</p>
-                  <p className="mt-1 font-bold text-white">{entry.soreness}/5</p>
+                <div className="tcps-panel-strong p-2">
+                  <p className="tcps-muted">Soreness</p>
+                  <p className="tcps-title mt-1 font-bold">{entry.soreness}/5</p>
                 </div>
-                <div className="rounded-lg bg-black/60 p-2">
-                  <p className="text-gray-400">Energy</p>
-                  <p className="mt-1 font-bold text-white">{entry.energy}/5</p>
+                <div className="tcps-panel-strong p-2">
+                  <p className="tcps-muted">Energy</p>
+                  <p className="tcps-title mt-1 font-bold">{entry.energy}/5</p>
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="tcps-panel p-4 mb-6">
-          <p className="text-sm font-semibold text-gold mb-2">7-Day Trend</p>
-          <p className="text-base font-bold text-white mb-2">Average Readiness: 72</p>
-          <p className="text-xs text-gray-300">Consistent performance builds systems. Track your trends and adapt.</p>
+        <div className="tcps-panel mb-6 p-4">
+          <p className="tcps-accent mb-2 text-sm font-semibold">7-Day Trend</p>
+          <p className="tcps-title mb-2 text-base font-bold">Average Readiness: 72</p>
+          <p className="tcps-copy text-xs">Consistent performance builds systems. Track your trends and adapt.</p>
         </div>
 
         <Link href={`/dashboard/${params.athleteId}`} className="tcps-button-primary">

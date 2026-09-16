@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
+import { useState } from 'react'
 
 interface ReadinessData {
   soreness: number
@@ -40,69 +40,71 @@ export default function ReadinessPage({ params }: { params: { athleteId: string 
   }
 
   const getStatus = (score: number) => {
-    if (readiness.painFlag) return { status: 'RED', color: 'bg-red-600' }
-    if (score >= 80) return { status: 'GREEN', color: 'bg-green-600' }
-    if (score >= 60) return { status: 'YELLOW', color: 'bg-yellow-600' }
-    return { status: 'RED', color: 'bg-red-600' }
+    if (readiness.painFlag) return { status: 'RED', cardClass: 'tcps-status-red' }
+    if (score >= 80) return { status: 'GREEN', cardClass: 'tcps-status-green' }
+    if (score >= 60) return { status: 'YELLOW', cardClass: 'tcps-status-yellow' }
+    return { status: 'RED', cardClass: 'tcps-status-red' }
   }
 
   const score = calculateScore()
-  const { status, color } = getStatus(score)
+  const { status, cardClass } = getStatus(score)
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black to-maroon p-4 sm:p-6">
+    <div className="page-shell page-background pt-20 sm:pt-24">
       <div className="mx-auto max-w-lg">
-        <div className="text-center py-6">
-          <p className="text-xs font-bold tracking-[0.22rem] text-gold uppercase">TC Performance System</p>
-          <h1 className="mt-2 text-3xl font-black text-white">Daily Readiness</h1>
-          <p className="mt-2 text-sm text-gray-300">
-            Athlete: <span className="font-bold text-gold">{params.athleteId}</span>
+        <div className="py-6 text-center">
+          <p className="tcps-eyebrow text-xs font-bold uppercase tracking-[0.22rem]">TC Performance System</p>
+          <h1 className="tcps-title mt-2 text-3xl font-black">Daily Readiness</h1>
+          <p className="tcps-muted mt-2 text-sm">
+            Athlete: <span className="tcps-accent font-bold">{params.athleteId}</span>
           </p>
         </div>
 
-        <div className="space-y-4 mb-6">
+        <div className="mb-6 space-y-4">
           {[
-            { label: 'Soreness', key: 'soreness', min: 1, max: 5 },
-            { label: 'Energy', key: 'energy', min: 1, max: 5 },
-            { label: 'Sleep Quality', key: 'sleepQuality', min: 1, max: 5 },
-            { label: 'Hydration', key: 'hydration', min: 1, max: 5 },
-            { label: 'Stress Level', key: 'stress', min: 1, max: 5 },
-            { label: 'Self Readiness', key: 'selfReadiness', min: 1, max: 5 },
+            { label: 'Soreness', key: 'soreness' },
+            { label: 'Energy', key: 'energy' },
+            { label: 'Sleep Quality', key: 'sleepQuality' },
+            { label: 'Hydration', key: 'hydration' },
+            { label: 'Stress Level', key: 'stress' },
+            { label: 'Self Readiness', key: 'selfReadiness' },
           ].map(({ label, key }) => (
             <div key={key} className="tcps-panel p-4">
-              <div className="flex items-center justify-between mb-3">
-                <label className="text-sm font-semibold text-gold">{label}</label>
-                <span className="text-lg font-bold text-white">{readiness[key as keyof ReadinessData]}</span>
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <label className="tcps-accent text-sm font-semibold">{label}</label>
+                <span className="tcps-title text-lg font-bold">{readiness[key as keyof ReadinessData]}</span>
               </div>
               <input
                 type="range"
                 min="1"
                 max="5"
                 value={readiness[key as keyof ReadinessData]}
-                onChange={(e) => setReadiness({ ...readiness, [key]: parseInt(e.target.value) })}
-                className="w-full accent-gold"
+                onChange={(e) => setReadiness({ ...readiness, [key]: parseInt(e.target.value, 10) })}
+                className="w-full"
+                style={{ accentColor: 'var(--accent)' }}
               />
             </div>
           ))}
         </div>
 
-        <div className="tcps-panel p-4 mb-6">
-          <label className="flex items-center gap-3 text-sm text-white">
+        <div className="tcps-panel mb-6 p-4">
+          <label className="tcps-copy flex items-center gap-3 text-sm">
             <input
               type="checkbox"
               checked={readiness.painFlag}
               onChange={(e) => setReadiness({ ...readiness, painFlag: e.target.checked })}
-              className="h-5 w-5 accent-gold"
+              className="h-5 w-5"
+              style={{ accentColor: 'var(--accent)' }}
             />
             <span>I have pain or concern that needs coach attention</span>
           </label>
         </div>
 
-        <div className={`${color} rounded-2xl border border-white/10 p-6 mb-6 text-white text-center shadow-[0_12px_32px_rgba(0,0,0,0.2)]`}>
-          <p className="text-[11px] font-bold tracking-[0.22rem] uppercase mb-3">Readiness Score</p>
-          <p className="text-4xl font-black mb-2">{score} / 100</p>
-          <p className="text-lg font-bold mb-2">{status}</p>
-          <p className="text-sm text-white/90">
+        <div className={`tcps-status-card ${cardClass} mb-6`}>
+          <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.22rem]">Readiness Score</p>
+          <p className="mb-2 text-4xl font-black">{score} / 100</p>
+          <p className="mb-2 text-lg font-bold">{status}</p>
+          <p className="text-sm opacity-90">
             {status === 'GREEN' && 'Planned training is appropriate.'}
             {status === 'YELLOW' && 'Training continues with adjustments.'}
             {status === 'RED' && 'Recovery or coach review recommended.'}

@@ -1,8 +1,24 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import { ThemeProvider } from '@/components/theme-provider'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 const inter = Inter({ subsets: ['latin'] })
+
+const themeScript = `
+(function () {
+  try {
+    var storageKey = 'tcps-theme';
+    var root = document.documentElement;
+    var savedTheme = window.localStorage.getItem(storageKey);
+    var systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    var theme = savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : systemTheme;
+    root.dataset.theme = theme;
+    root.style.colorScheme = theme;
+  } catch (error) {}
+})();
+`
 
 export const metadata: Metadata = {
   title: 'TCPS - Athlete Readiness & Movement Intelligence',
@@ -15,8 +31,16 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className={`${inter.className} app-shell`}>
+        <ThemeProvider>
+          <ThemeToggle />
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   )
 }
