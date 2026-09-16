@@ -39,8 +39,9 @@ npm install
 Create a `.env` file in the root directory:
 
 ```env
-OPENAI_API_KEY=your_api_key_here
-OVERRIDE_CONFIG=true
+OPENAI_API_KEY=YOUR_OPENAI_API_KEY
+OPENAI_MODEL=gpt-5.6-luna
+NEXT_PUBLIC_PILOT_NAME=Cresset Christian Academy
 ```
 
 #### 5. Run the Application
