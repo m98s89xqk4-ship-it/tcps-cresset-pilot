@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { loadReadinessSnapshot, saveReadinessSnapshot } from '@/lib/athlete-readiness'
+import { calculateReadiness, loadReadinessSnapshot, saveReadinessSnapshot } from '@/lib/athlete-readiness'
 
 interface ReadinessData { soreness: number; energy: number; sleepQuality: number; hydration: number; stress: number; selfReadiness: number; painFlag: boolean }
 
@@ -18,10 +18,15 @@ export default function ReadinessPage({ params }: { params: { athleteId: string 
     saveReadinessSnapshot({ athleteCode: params.athleteId, soreness: readiness.soreness, energy: readiness.energy, sleep: readiness.sleepQuality, hydration: readiness.hydration, stress: readiness.stress, selfReadiness: readiness.selfReadiness, painFlag: readiness.painFlag })
   }, [params.athleteId, readiness])
 
-  const score = Math.round(
-    readiness.sleepQuality * 0.2 * 20 + readiness.energy * 0.2 * 20 + (6 - readiness.soreness) * 0.2 * 20 + readiness.hydration * 0.15 * 20 + readiness.selfReadiness * 0.15 * 20 + (6 - readiness.stress) * 0.1 * 20,
-  )
-  const status = readiness.painFlag ? 'RED' : score >= 80 ? 'GREEN' : score >= 60 ? 'YELLOW' : 'RED'
+  const { score, status } = calculateReadiness({
+    soreness: readiness.soreness,
+    energy: readiness.energy,
+    sleep: readiness.sleepQuality,
+    hydration: readiness.hydration,
+    stress: readiness.stress,
+    selfReadiness: readiness.selfReadiness,
+    painFlag: readiness.painFlag,
+  })
   const color = status === 'GREEN' ? 'bg-green-600' : status === 'YELLOW' ? 'bg-yellow-600' : 'bg-red-600'
   const fields = [
     ['Soreness', 'soreness'], ['Energy', 'energy'], ['Sleep Quality', 'sleepQuality'],

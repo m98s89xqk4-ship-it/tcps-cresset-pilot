@@ -122,8 +122,8 @@ Each lesson includes:
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
 - **Runtime:** Node.js
-- **Database:** PostgreSQL (future)
-- **AI:** OpenAI API
+- **Database:** PostgreSQL via Drizzle ORM and the `pg` driver
+- **AI:** OpenAI API (reserved for future movement-analysis work)
 - **Deployment:** Vercel
 - **Version Control:** GitHub
 
@@ -132,7 +132,9 @@ Each lesson includes:
 ### Prerequisites
 - Node.js 18+
 - npm or yarn
-- OpenAI API key
+- PostgreSQL
+- `DATABASE_URL` for the server API routes
+- OpenAI API key only if you plan to add future OpenAI features
 
 ### Installation
 
@@ -152,14 +154,31 @@ npm install
 cp .env.example .env.local
 ```
 
-4. Add your OpenAI API key to `.env.local`
+4. Add a PostgreSQL connection string to `.env.local`
 
-5. Start development server
+```env
+DATABASE_URL=******HOST:5432/tcps_cresset_pilot
+NEXT_PUBLIC_PILOT_NAME=Cresset Christian Academy
+```
+
+5. Run the initial migration
+
+```bash
+npm run db:migrate
+```
+
+For future schema changes:
+
+```bash
+npm run db:generate
+```
+
+6. Start development server
 ```bash
 npm run dev
 ```
 
-6. Open [http://localhost:3000](http://localhost:3000)
+7. Open [http://localhost:3000](http://localhost:3000)
 
 ## Usage
 
@@ -180,6 +199,25 @@ npm run dev
 - **Full Lesson** view provides textbook-level explanation
 - **Apply It** section includes weekly challenges
 - **Knowledge Check** assesses understanding
+
+## Persistence and API Foundation
+
+This repository now includes a first PostgreSQL persistence layer for:
+
+- athletes
+- daily readiness entries
+- movement observations
+- curriculum progress
+
+App Router API routes are available under `app/api/athletes/...` for creating or looking up athletes, saving readiness entries, saving movement observations, and upserting curriculum progress.
+
+### Important current limitation
+
+This PR does **not** implement OpenAI movement analysis. Movement observations can store structured coach-facing observation data plus an optional external media reference, while AI-generated observations remain future work.
+
+### Current UI compatibility
+
+The existing pilot UI still uses its current browser-storage flow. The new PostgreSQL routes provide the production-oriented server foundation without replacing the current `sessionStorage`/`localStorage` client behavior in this change.
 
 ## Design Philosophy
 
@@ -233,6 +271,7 @@ This application preserves the educational depth of official TCPS materials:
 1. Push repository to GitHub
 2. Connect repo to Vercel at [vercel.com](https://vercel.com)
 3. Set environment variables:
+   - `DATABASE_URL`
    - `OPENAI_API_KEY`
    - `NEXT_PUBLIC_PILOT_NAME`
 4. Deploy
@@ -240,8 +279,9 @@ This application preserves the educational depth of official TCPS materials:
 ### Environment Variables
 
 ```
+DATABASE_URL=******HOST:5432/tcps_cresset_pilot
 OPENAI_API_KEY=your_key_here
-OPENAI_MODEL=gpt-4
+OPENAI_MODEL=gpt-4o
 NEXT_PUBLIC_PILOT_NAME=Cresset Christian Academy
 ```
 
@@ -253,6 +293,7 @@ tcps-cresset-pilot/
 │   ├── layout.tsx              # Root layout
 │   ├── page.tsx                # Home dashboard
 │   ├── globals.css             # Global styles
+│   ├── api/                    # App Router API routes
 │   └── dashboard/[athleteId]/
 │       ├── readiness/
 │       ├── movement/
@@ -261,11 +302,14 @@ tcps-cresset-pilot/
 │       ├── history/
 │       └── curriculum/[sessionNumber]/
 ├── lib/
-│   └── curriculum.ts           # 15-session curriculum data
-├── public/                     # Static assets
+│   ├── curriculum.ts           # 15-session curriculum data
+│   ├── readiness.ts            # Shared readiness calculator
+│   ├── validation.ts           # Zod request validation
+│   └── server/                 # Server-only database/schema helpers
+├── drizzle/                    # Committed Drizzle migration(s)
+├── tests/                      # Focused server-safe unit tests
 ├── package.json
 ├── tsconfig.json
-├── tailwind.config.ts
 ├── next.config.js
 ├── postcss.config.js
 └── .env.example
@@ -287,6 +331,15 @@ npm run start
 ```bash
 npm run lint
 ```
+
+### Focused Unit Tests
+```bash
+npm test
+```
+
+### Notes on Testing
+
+The included tests cover the shared readiness calculator and validation/query-guard logic without requiring a running PostgreSQL instance. Full route integration testing still requires a reachable PostgreSQL database configured through `DATABASE_URL`.
 
 ## Core Principles
 
