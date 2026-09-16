@@ -116,6 +116,8 @@ Each lesson includes:
 - Stress
 - Movement observations
 
+Prototype persistence is currently browser-local: the latest readiness snapshot is stored per athlete code in `sessionStorage`, and dated readiness history is stored per athlete code in `localStorage` for up to 30 entries. PostgreSQL remains future work.
+
 ## Technology Stack
 
 - **Framework:** Next.js 14 (App Router)

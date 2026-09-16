@@ -2,26 +2,48 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { loadReadinessSnapshot, saveReadinessSnapshot } from '@/lib/athlete-readiness'
+import { calculateReadiness, loadReadinessSnapshot, saveReadinessHistory, saveReadinessSnapshot } from '@/lib/athlete-readiness'
 
 interface ReadinessData { soreness: number; energy: number; sleepQuality: number; hydration: number; stress: number; selfReadiness: number; painFlag: boolean }
 
 export default function ReadinessPage({ params }: { params: { athleteId: string } }) {
   const [readiness, setReadiness] = useState<ReadinessData>({ soreness: 3, energy: 3, sleepQuality: 3, hydration: 3, stress: 3, selfReadiness: 3, painFlag: false })
+  const [loadedAthleteId, setLoadedAthleteId] = useState<string | null>(null)
 
   useEffect(() => {
-    const saved = loadReadinessSnapshot()
+    const saved = loadReadinessSnapshot(params.athleteId)
     setReadiness({ soreness: saved.soreness, energy: saved.energy, sleepQuality: saved.sleep, hydration: saved.hydration, stress: saved.stress, selfReadiness: saved.selfReadiness, painFlag: saved.painFlag })
-  }, [])
+    setLoadedAthleteId(params.athleteId)
+  }, [params.athleteId])
 
   useEffect(() => {
-    saveReadinessSnapshot({ athleteCode: params.athleteId, soreness: readiness.soreness, energy: readiness.energy, sleep: readiness.sleepQuality, hydration: readiness.hydration, stress: readiness.stress, selfReadiness: readiness.selfReadiness, painFlag: readiness.painFlag })
-  }, [params.athleteId, readiness])
+    if (loadedAthleteId !== params.athleteId) return
 
-  const score = Math.round(
-    readiness.sleepQuality * 0.2 * 20 + readiness.energy * 0.2 * 20 + (6 - readiness.soreness) * 0.2 * 20 + readiness.hydration * 0.15 * 20 + readiness.selfReadiness * 0.15 * 20 + (6 - readiness.stress) * 0.1 * 20,
-  )
-  const status = readiness.painFlag ? 'RED' : score >= 80 ? 'GREEN' : score >= 60 ? 'YELLOW' : 'RED'
+    const snapshot = {
+      athleteCode: params.athleteId,
+      soreness: readiness.soreness,
+      energy: readiness.energy,
+      sleep: readiness.sleepQuality,
+      hydration: readiness.hydration,
+      stress: readiness.stress,
+      selfReadiness: readiness.selfReadiness,
+      painFlag: readiness.painFlag,
+      recordedAt: new Date().toISOString(),
+    }
+
+    saveReadinessSnapshot(snapshot)
+    saveReadinessHistory(snapshot)
+  }, [loadedAthleteId, params.athleteId, readiness])
+
+  const { score, status } = calculateReadiness({
+    soreness: readiness.soreness,
+    energy: readiness.energy,
+    sleep: readiness.sleepQuality,
+    hydration: readiness.hydration,
+    stress: readiness.stress,
+    selfReadiness: readiness.selfReadiness,
+    painFlag: readiness.painFlag,
+  })
   const color = status === 'GREEN' ? 'bg-green-600' : status === 'YELLOW' ? 'bg-yellow-600' : 'bg-red-600'
   const fields = [
     ['Soreness', 'soreness'], ['Energy', 'energy'], ['Sleep Quality', 'sleepQuality'],
