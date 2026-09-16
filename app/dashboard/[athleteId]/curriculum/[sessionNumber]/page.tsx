@@ -7,7 +7,8 @@ import { curriculum, getCurriculumSession } from '@/lib/curriculum'
 type ViewMode = 'overview' | 'lesson' | 'apply' | 'check'
 
 export default function CurriculumPage({ params }: { params: { athleteId: string; sessionNumber?: string } }) {
-  const sessionNum = params.sessionNumber ? parseInt(params.sessionNumber, 10) : 1
+  const sessionParam = params.sessionNumber ?? '1'
+  const sessionNum = /^\d+$/.test(sessionParam) ? Number(sessionParam) : Number.NaN
   const session = getCurriculumSession(sessionNum)
   const [viewMode, setViewMode] = useState<ViewMode>('overview')
   const [answers, setAnswers] = useState<Record<number, string>>({})
