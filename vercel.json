@@ -8,10 +8,10 @@
   ],
   "env": {
     "OPENAI_API_KEY": "@openai_api_key",
-    "OPENAI_MODEL": "gpt-5.6-luna",
+    "OPENAI_MODEL": "gpt-4o",
     "NEXT_PUBLIC_PILOT_NAME": "Cresset Christian Academy"
   },
-  "buildCommand": "npm install && npm run build",
-  "installCommand": "npm install",
+  "installCommand": "npm ci",
+  "buildCommand": "npm run build",
   "outputDirectory": ".next"
 }
