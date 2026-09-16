@@ -15,135 +15,122 @@ export default function Home() {
 
   if (!entered) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-maroon to-black p-4">
+      <main className="min-h-screen flex items-center justify-center p-4 sm:p-6">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gold mb-2">TC PERFORMANCE SYSTEM</h1>
-            <h2 className="text-2xl font-semibold text-white mb-2">Athlete Readiness & Movement Intelligence</h2>
-            <p className="text-gold text-sm">UPP Philosophy · CAPOS Operating System</p>
-            <p className="text-gray-300 text-xs mt-2">Cresset Christian Academy Pilot</p>
+            <p className="text-xs font-bold tracking-[0.22rem] text-gold uppercase">TC Performance System</p>
+            <h1 className="mt-3 text-3xl font-black text-white sm:text-4xl">Athlete Readiness</h1>
+            <h2 className="mt-2 text-lg font-semibold text-gold/90">Movement Intelligence</h2>
+            <p className="mt-3 text-sm text-gray-300">Cresset Christian Academy Pilot</p>
           </div>
 
-          <div className="bg-white bg-opacity-10 rounded-lg p-6 backdrop-blur-sm border border-gold border-opacity-30">
-            <p className="text-white text-center mb-6 italic">"Read the athlete. Train the day. Build the system."</p>
-            
-            <div className="mb-6">
-              <label className="block text-gold text-sm font-semibold mb-2">Athlete Code</label>
+          <div className="tcps-panel p-5 sm:p-6">
+            <p className="text-center text-base italic text-white/90 mb-6">
+              “Read the athlete. Train the day. Build the system.”
+            </p>
+
+            <div className="mb-5">
+              <label className="block text-sm font-semibold text-gold mb-2">Athlete Code</label>
               <input
                 type="text"
                 placeholder="e.g., CCA-07"
                 value={athleteId}
                 onChange={(e) => setAthleteId(e.target.value.toUpperCase())}
-                onKeyPress={(e) => e.key === 'Enter' && handleStart()}
-                className="w-full px-4 py-3 bg-black bg-opacity-50 border border-gold text-white placeholder-gray-400 rounded-lg focus:outline-none focus:border-opacity-100"
+                onKeyDown={(e) => e.key === 'Enter' && handleStart()}
+                className="w-full rounded-xl border border-gold/50 bg-black/40 px-4 py-3 text-base text-white placeholder:text-gray-400 focus:border-gold"
               />
             </div>
 
             <button
               onClick={handleStart}
-              className="w-full bg-gold hover:bg-yellow-500 text-black font-bold py-3 rounded-lg transition-all duration-200 transform hover:scale-105"
+              className="tcps-button-primary"
             >
               ENTER SYSTEM
             </button>
           </div>
 
-          <div className="mt-12 grid grid-cols-2 gap-4">
+          <div className="mt-8 grid grid-cols-2 gap-3">
             {['Durability', 'Repeatability', 'Movement Efficiency', 'Explosive Power'].map((pillar) => (
-              <div key={pillar} className="bg-black bg-opacity-50 border border-gold border-opacity-50 rounded p-3 text-center">
-                <p className="text-gold text-xs font-semibold">{pillar}</p>
+              <div
+                key={pillar}
+                className="tcps-panel-strong px-3 py-3 text-center"
+              >
+                <p className="text-[11px] font-bold tracking-[0.14rem] text-gold uppercase">{pillar}</p>
               </div>
             ))}
           </div>
         </div>
-      </div>
+      </main>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black to-maroon">
-      <div className="max-w-md mx-auto p-4">
-        {/* Header */}
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(125,30,43,0.5),_transparent_30%)]">
+      <div className="mx-auto max-w-md px-4 py-6 sm:px-6">
         <div className="text-center py-6">
-          <p className="text-gold text-xs font-semibold">TC PERFORMANCE SYSTEM</p>
-          <h1 className="text-2xl font-bold text-white">Athlete Readiness</h1>
-          <p className="text-gray-300 text-sm mt-1">Athlete: <span className="font-bold text-gold">{athleteId}</span></p>
+          <p className="text-xs font-bold tracking-[0.22rem] text-gold uppercase">TC Performance System</p>
+          <h1 className="mt-2 text-3xl font-black text-white">Athlete Readiness</h1>
+          <p className="mt-2 text-sm text-gray-300">
+            Athlete: <span className="font-bold text-gold">{athleteId}</span>
+          </p>
         </div>
 
-        {/* Primary Message */}
-        <div className="bg-gold bg-opacity-10 border border-gold border-opacity-30 rounded-lg p-4 mb-6">
-          <p className="text-gold text-center font-semibold">TODAY'S PERFORMANCE CYCLE</p>
-          <p className="text-white text-center text-sm mt-2 italic">"Read the athlete. Train the day. Build the system."</p>
+        <div className="tcps-panel p-4 mb-6">
+          <p className="text-center text-xs font-semibold tracking-[0.2rem] text-gold uppercase">Today’s Performance Cycle</p>
+          <p className="mt-3 text-center text-sm italic text-white/90">“Read the athlete. Train the day. Build the system.”</p>
         </div>
 
-        {/* Navigation Buttons */}
         <div className="space-y-3">
-          <Link
-            href={`/dashboard/${athleteId}/readiness`}
-            className="block bg-gradient-to-r from-maroon to-red-900 hover:from-red-900 hover:to-maroon border border-gold border-opacity-50 rounded-lg p-4 text-white font-bold text-center transition-all duration-200 transform hover:scale-105"
-          >
-            <p className="text-gold text-sm mb-1">STEP 1</p>
-            <p>Daily Readiness</p>
-            <p className="text-xs text-gray-300 mt-1">How are you today?</p>
+          <Link href={`/dashboard/${athleteId}/readiness`} className="tcps-button-primary">
+            <span className="block text-[10px] font-bold tracking-[0.2rem] uppercase text-black/75">Step 1</span>
+            <span className="mt-1 block text-base">Daily Readiness</span>
+            <span className="mt-1 block text-xs font-medium text-black/70">How are you today?</span>
           </Link>
 
-          <Link
-            href={`/dashboard/${athleteId}/movement`}
-            className="block bg-gradient-to-r from-maroon to-red-900 hover:from-red-900 hover:to-maroon border border-gold border-opacity-50 rounded-lg p-4 text-white font-bold text-center transition-all duration-200 transform hover:scale-105"
-          >
-            <p className="text-gold text-sm mb-1">STEP 2</p>
-            <p>Movement Capture</p>
-            <p className="text-xs text-gray-300 mt-1">How are you moving?</p>
+          <Link href={`/dashboard/${athleteId}/movement`} className="tcps-button-primary">
+            <span className="block text-[10px] font-bold tracking-[0.2rem] uppercase text-black/75">Step 2</span>
+            <span className="mt-1 block text-base">Movement Capture</span>
+            <span className="mt-1 block text-xs font-medium text-black/70">How are you moving?</span>
           </Link>
 
-          <Link
-            href={`/dashboard/${athleteId}/training`}
-            className="block bg-gradient-to-r from-maroon to-red-900 hover:from-red-900 hover:to-maroon border border-gold border-opacity-50 rounded-lg p-4 text-white font-bold text-center transition-all duration-200 transform hover:scale-105"
-          >
-            <p className="text-gold text-sm mb-1">STEP 3</p>
-            <p>Today's Training</p>
-            <p className="text-xs text-gray-300 mt-1">What does today call for?</p>
+          <Link href={`/dashboard/${athleteId}/training`} className="tcps-button-primary">
+            <span className="block text-[10px] font-bold tracking-[0.2rem] uppercase text-black/75">Step 3</span>
+            <span className="mt-1 block text-base">Today’s Training</span>
+            <span className="mt-1 block text-xs font-medium text-black/70">What does today call for?</span>
           </Link>
 
-          <Link
-            href={`/dashboard/${athleteId}/recovery`}
-            className="block bg-gradient-to-r from-maroon to-red-900 hover:from-red-900 hover:to-maroon border border-gold border-opacity-50 rounded-lg p-4 text-white font-bold text-center transition-all duration-200 transform hover:scale-105"
-          >
-            <p className="text-gold text-sm mb-1">STEP 4</p>
-            <p>Recovery & Learning</p>
-            <p className="text-xs text-gray-300 mt-1">Complete the cycle</p>
+          <Link href={`/dashboard/${athleteId}/recovery`} className="tcps-button-primary">
+            <span className="block text-[10px] font-bold tracking-[0.2rem] uppercase text-black/75">Step 4</span>
+            <span className="mt-1 block text-base">Recovery & Learning</span>
+            <span className="mt-1 block text-xs font-medium text-black/70">Complete the cycle</span>
           </Link>
 
-          <Link
-            href={`/dashboard/${athleteId}/history`}
-            className="block bg-gradient-to-r from-maroon to-red-900 hover:from-red-900 hover:to-maroon border border-gold border-opacity-50 rounded-lg p-4 text-white font-bold text-center transition-all duration-200 transform hover:scale-105"
-          >
-            <p className="text-gold text-sm mb-1">PROGRESS</p>
-            <p>Your History</p>
-            <p className="text-xs text-gray-300 mt-1">7-day trends</p>
+          <Link href={`/dashboard/${athleteId}/history`} className="tcps-button-primary">
+            <span className="block text-[10px] font-bold tracking-[0.2rem] uppercase text-black/75">Progress</span>
+            <span className="mt-1 block text-base">Your History</span>
+            <span className="mt-1 block text-xs font-medium text-black/70">7-day trends</span>
           </Link>
         </div>
 
-        {/* CAPOS Pillars */}
         <div className="mt-8 grid grid-cols-2 gap-3">
           {['Durability', 'Repeatability', 'Movement Efficiency', 'Explosive Power'].map((pillar) => (
-            <div key={pillar} className="bg-black bg-opacity-50 border border-gold border-opacity-30 rounded p-3 text-center hover:border-opacity-100 transition-all duration-200">
-              <p className="text-gold text-xs font-bold">{pillar}</p>
+            <div key={pillar} className="tcps-panel-strong px-3 py-3 text-center">
+              <p className="text-[11px] font-bold tracking-[0.12rem] text-gold uppercase">{pillar}</p>
             </div>
           ))}
         </div>
 
-        {/* Footer */}
         <div className="mt-8 text-center">
-          <p className="text-gray-400 text-xs mb-2">Recovery is part of training.</p>
-          <p className="text-gray-400 text-xs">The system continues.</p>
+          <p className="text-xs text-gray-400">Recovery is part of training.</p>
+          <p className="mt-1 text-xs text-gray-400">The system continues.</p>
           <button
             onClick={() => setEntered(false)}
-            className="mt-4 text-gold text-xs hover:text-yellow-400 transition-colors"
+            className="mt-4 text-sm font-semibold text-gold hover:text-yellow-400"
           >
             Change Athlete
           </button>
         </div>
       </div>
-    </div>
+    </main>
   )
 }

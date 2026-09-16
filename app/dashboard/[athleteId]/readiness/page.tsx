@@ -25,14 +25,13 @@ export default function ReadinessPage({ params }: { params: { athleteId: string 
   })
 
   const calculateScore = () => {
-    // Reverse soreness and stress (higher is worse)
-    const sorelnessReversed = 6 - readiness.soreness
+    const sorenessReversed = 6 - readiness.soreness
     const stressReversed = 6 - readiness.stress
 
     const score =
       readiness.sleepQuality * 0.2 * 20 +
       readiness.energy * 0.2 * 20 +
-      sorelnessReversed * 0.2 * 20 +
+      sorenessReversed * 0.2 * 20 +
       readiness.hydration * 0.15 * 20 +
       readiness.selfReadiness * 0.15 * 20 +
       stressReversed * 0.1 * 20
@@ -51,12 +50,14 @@ export default function ReadinessPage({ params }: { params: { athleteId: string 
   const { status, color } = getStatus(score)
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black to-maroon p-4">
-      <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-gradient-to-b from-black to-maroon p-4 sm:p-6">
+      <div className="mx-auto max-w-lg">
         <div className="text-center py-6">
-          <p className="text-gold text-xs font-semibold">TC PERFORMANCE SYSTEM</p>
-          <h1 className="text-2xl font-bold text-white">Daily Readiness</h1>
-          <p className="text-gray-300 text-sm mt-1">Athlete: <span className="font-bold text-gold">{params.athleteId}</span></p>
+          <p className="text-xs font-bold tracking-[0.22rem] text-gold uppercase">TC Performance System</p>
+          <h1 className="mt-2 text-3xl font-black text-white">Daily Readiness</h1>
+          <p className="mt-2 text-sm text-gray-300">
+            Athlete: <span className="font-bold text-gold">{params.athleteId}</span>
+          </p>
         </div>
 
         <div className="space-y-4 mb-6">
@@ -68,10 +69,10 @@ export default function ReadinessPage({ params }: { params: { athleteId: string 
             { label: 'Stress Level', key: 'stress', min: 1, max: 5 },
             { label: 'Self Readiness', key: 'selfReadiness', min: 1, max: 5 },
           ].map(({ label, key }) => (
-            <div key={key} className="bg-black bg-opacity-50 border border-gold border-opacity-30 rounded-lg p-4">
-              <div className="flex justify-between items-center mb-2">
-                <label className="text-gold font-semibold text-sm">{label}</label>
-                <span className="text-white text-lg font-bold">{readiness[key as keyof ReadinessData]}</span>
+            <div key={key} className="tcps-panel p-4">
+              <div className="flex items-center justify-between mb-3">
+                <label className="text-sm font-semibold text-gold">{label}</label>
+                <span className="text-lg font-bold text-white">{readiness[key as keyof ReadinessData]}</span>
               </div>
               <input
                 type="range"
@@ -85,33 +86,30 @@ export default function ReadinessPage({ params }: { params: { athleteId: string 
           ))}
         </div>
 
-        <div className="bg-black bg-opacity-50 border border-gold border-opacity-30 rounded-lg p-4 mb-6">
-          <label className="flex items-center text-white">
+        <div className="tcps-panel p-4 mb-6">
+          <label className="flex items-center gap-3 text-sm text-white">
             <input
               type="checkbox"
               checked={readiness.painFlag}
               onChange={(e) => setReadiness({ ...readiness, painFlag: e.target.checked })}
-              className="mr-3 w-5 h-5 accent-gold"
+              className="h-5 w-5 accent-gold"
             />
-            <span className="text-sm">I have pain or concern that needs coach attention</span>
+            <span>I have pain or concern that needs coach attention</span>
           </label>
         </div>
 
-        <div className={`${color} rounded-lg p-6 mb-6 text-white text-center`}>
-          <p className="text-xs font-semibold mb-2">READINESS SCORE</p>
-          <p className="text-4xl font-bold mb-2">{score} / 100</p>
-          <p className="text-lg font-semibold mb-3">{status}</p>
-          <p className="text-sm">
+        <div className={`${color} rounded-2xl border border-white/10 p-6 mb-6 text-white text-center shadow-[0_12px_32px_rgba(0,0,0,0.2)]`}>
+          <p className="text-[11px] font-bold tracking-[0.22rem] uppercase mb-3">Readiness Score</p>
+          <p className="text-4xl font-black mb-2">{score} / 100</p>
+          <p className="text-lg font-bold mb-2">{status}</p>
+          <p className="text-sm text-white/90">
             {status === 'GREEN' && 'Planned training is appropriate.'}
             {status === 'YELLOW' && 'Training continues with adjustments.'}
             {status === 'RED' && 'Recovery or coach review recommended.'}
           </p>
         </div>
 
-        <Link
-          href={`/dashboard/${params.athleteId}/movement`}
-          className="block w-full bg-gold hover:bg-yellow-500 text-black font-bold py-3 rounded-lg text-center transition-all duration-200 transform hover:scale-105"
-        >
+        <Link href={`/dashboard/${params.athleteId}/movement`} className="tcps-button-primary">
           Continue to Movement Check
         </Link>
       </div>
