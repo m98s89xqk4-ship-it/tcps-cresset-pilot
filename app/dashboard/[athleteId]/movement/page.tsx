@@ -1,5 +1,6 @@
 'use client'
 
+import NextImage from 'next/image'
 import Link from 'next/link'
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
 
@@ -44,7 +45,7 @@ async function resizeImage(file: File) {
   const dataUrl = await fileToDataUrl(file)
 
   return new Promise<string>((resolve, reject) => {
-    const image = new Image()
+    const image = new window.Image()
     image.onload = () => {
       const maxDimension = 1600
       const scale = Math.min(1, maxDimension / Math.max(image.width, image.height))
@@ -216,7 +217,14 @@ export default function MovementPage({ params }: { params: { athleteId: string }
           <p className="mt-3 text-xs text-gray-300">Selected movement: <span className="font-bold text-gold">{selectedMovement}</span></p>
           {fileName && <p className="mt-1 text-xs text-gray-300">Selected file: {fileName}</p>}
           {imageDataUrl && (
-            <img src={imageDataUrl} alt={`${selectedMovement} preview`} className="mt-4 w-full rounded-xl border border-gold/40 object-cover" />
+            <NextImage
+              src={imageDataUrl}
+              alt={`${selectedMovement} preview`}
+              width={1200}
+              height={900}
+              unoptimized
+              className="mt-4 h-auto w-full rounded-xl border border-gold/40 object-cover"
+            />
           )}
         </div>
 

@@ -33,7 +33,7 @@ export default function RecoveryPage({ params }: { params: { athleteId: string }
 
         <div className="bg-gold bg-opacity-10 border border-gold border-opacity-30 rounded-lg p-4 mb-6">
           <p className="text-gold text-center font-semibold italic">
-            "Recovery is part of training."
+            &ldquo;Recovery is part of training.&rdquo;
           </p>
           <p className="text-white text-center text-xs mt-2">Learn the system. Build consistency. Produce results.</p>
         </div>
@@ -71,7 +71,7 @@ export default function RecoveryPage({ params }: { params: { athleteId: string }
                 This 15-session course teaches you how recovery, movement, and training work together.
               </p>
               <p className="text-white text-sm mb-3">
-                You'll learn to read your readiness, understand your body's signals, and make better decisions about training and recovery.
+                You&apos;ll learn to read your readiness, understand your body&apos;s signals, and make better decisions about training and recovery.
               </p>
               <p className="text-white text-sm">
                 Each lesson includes: learning objectives, key concepts, practical applications, and challenges to try this week.
