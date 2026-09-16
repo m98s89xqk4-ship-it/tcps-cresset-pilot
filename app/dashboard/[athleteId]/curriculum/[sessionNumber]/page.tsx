@@ -218,18 +218,32 @@ export default function CurriculumPage({ params }: { params: { athleteId: string
         )}
 
         <div className="mb-6 space-y-3">
-          <div className={`grid grid-cols-1 gap-2 ${prevSession && nextSession ? 'sm:grid-cols-2' : 'sm:grid-cols-1'}`}>
-            {prevSession && (
+          {prevSession && nextSession && (
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               <Link href={`/dashboard/${params.athleteId}/curriculum/${prevSession.number}`} className="tcps-button-secondary text-sm">
                 ← Previous
               </Link>
-            )}
-            {nextSession && (
               <Link href={`/dashboard/${params.athleteId}/curriculum/${nextSession.number}`} className="tcps-button-primary text-sm">
                 Next →
               </Link>
-            )}
-          </div>
+            </div>
+          )}
+
+          {prevSession && !nextSession && (
+            <div className="flex">
+              <Link href={`/dashboard/${params.athleteId}/curriculum/${prevSession.number}`} className="tcps-button-secondary tcps-button-inline min-w-[8rem] text-sm">
+                ← Previous
+              </Link>
+            </div>
+          )}
+
+          {!prevSession && nextSession && (
+            <div className="flex justify-end">
+              <Link href={`/dashboard/${params.athleteId}/curriculum/${nextSession.number}`} className="tcps-button-primary tcps-button-inline min-w-[8rem] text-sm">
+                Next →
+              </Link>
+            </div>
+          )}
 
           <Link href={`/dashboard/${params.athleteId}/recovery`} className="tcps-button-secondary">
             Back to Recovery
