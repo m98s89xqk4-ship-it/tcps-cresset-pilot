@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { curriculum, getCurriculumSession } from '../../../../../lib/curriculum'
+import { curriculum, getCurriculumSession } from '@/lib/curriculum'
 
 type ViewMode = 'overview' | 'lesson' | 'apply' | 'check'
 

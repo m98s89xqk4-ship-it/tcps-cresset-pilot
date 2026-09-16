@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import './globals.css'
-import { ThemeProvider } from '../components/theme-provider'
-import { ThemeToggle } from '../components/theme-toggle'
+import { ThemeProvider } from '@/components/theme-provider'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 const themeScript = `
 (function () {
@@ -29,10 +30,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      </head>
       <body className="app-shell">
+        <Script id="tcps-theme-init" strategy="beforeInteractive">
+          {themeScript}
+        </Script>
         <ThemeProvider>
           <ThemeToggle />
           {children}

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { curriculum } from '../../../../lib/curriculum'
+import { curriculum } from '@/lib/curriculum'
 
 export default function RecoveryPage({ params }: { params: { athleteId: string } }) {
   const [completedLessons, setCompletedLessons] = useState<number[]>([])
