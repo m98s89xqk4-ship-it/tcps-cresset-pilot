@@ -221,13 +221,13 @@ export default function CurriculumPage({ params }: { params: { athleteId: string
         )}
 
         <div className="mb-6 space-y-3">
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <div className="grid grid-cols-2 gap-2">
             {prevSession ? (
               <Link href={`/dashboard/${params.athleteId}/curriculum/${prevSession.number}`} className="tcps-button-secondary text-sm">
                 ← Previous
               </Link>
             ) : (
-              <div className="hidden sm:block" aria-hidden="true" />
+              <div className="tcps-button-secondary opacity-0 pointer-events-none" aria-hidden="true" />
             )}
 
             {nextSession ? (
@@ -235,7 +235,7 @@ export default function CurriculumPage({ params }: { params: { athleteId: string
                 Next →
               </Link>
             ) : (
-              <div className="hidden sm:block" aria-hidden="true" />
+              <div className="tcps-button-secondary opacity-0 pointer-events-none" aria-hidden="true" />
             )}
           </div>
 
