@@ -75,7 +75,7 @@ function normalizeSnapshot(
 }
 
 function canUseLegacySnapshot(snapshot: AthleteReadinessSnapshot, athleteCode: string) {
-  return !snapshot.athleteCode || snapshot.athleteCode === athleteCode
+  return snapshot.athleteCode === athleteCode
 }
 
 export function hasReadinessSnapshot(athleteCode: string): boolean {
