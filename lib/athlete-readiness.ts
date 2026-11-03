@@ -1,3 +1,7 @@
+import { calculateReadiness } from './readiness.ts'
+import type { ReadinessCalculation } from './readiness.ts'
+import type { ReadinessStatus } from './domain.ts'
+
 export type AthleteReadinessSnapshot = {
   athleteCode: string
   soreness: number
@@ -11,12 +15,8 @@ export type AthleteReadinessSnapshot = {
   recordedAt?: string
 }
 
-export type ReadinessStatus = 'GREEN' | 'YELLOW' | 'RED'
-
-export type ReadinessResult = {
-  score: number
-  status: ReadinessStatus
-}
+export type ReadinessResult = ReadinessCalculation
+export type { ReadinessStatus }
 
 const STORAGE_KEY = 'tcps-athlete-readiness'
 const HISTORY_STORAGE_KEY_PREFIX = 'tcps-athlete-readiness-history:'
@@ -36,26 +36,6 @@ function getHistoryStorageKey(athleteCode: string) {
 
 function mergeSnapshot(snapshot?: Partial<AthleteReadinessSnapshot>): AthleteReadinessSnapshot {
   return { ...DEFAULT_READINESS, ...snapshot }
-}
-
-export function calculateReadiness(
-  readiness: Pick<
-    AthleteReadinessSnapshot,
-    'soreness' | 'energy' | 'sleep' | 'hydration' | 'stress' | 'selfReadiness' | 'painFlag'
-  >,
-): ReadinessResult {
-  const score = Math.round(
-    readiness.sleep * 0.2 * 20 +
-    readiness.energy * 0.2 * 20 +
-    (6 - readiness.soreness) * 0.2 * 20 +
-    readiness.hydration * 0.15 * 20 +
-    readiness.selfReadiness * 0.15 * 20 +
-    (6 - readiness.stress) * 0.1 * 20,
-  )
-
-  const status: ReadinessStatus = readiness.painFlag ? 'RED' : score >= 80 ? 'GREEN' : score >= 60 ? 'YELLOW' : 'RED'
-
-  return { score, status }
 }
 
 export function loadReadinessSnapshot(athleteCode?: string): AthleteReadinessSnapshot {
@@ -161,3 +141,5 @@ export function saveReadinessHistory(snapshot: AthleteReadinessSnapshot, maxEntr
 
   return nextHistory
 }
+
+export { calculateReadiness }
