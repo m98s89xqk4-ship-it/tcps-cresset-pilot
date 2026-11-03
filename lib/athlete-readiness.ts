@@ -1,4 +1,7 @@
-export type ReadinessStatus = 'GREEN' | 'YELLOW' | 'RED'
+import type { ReadinessStatus } from './domain.ts'
+
+export { calculateReadiness } from './readiness.ts'
+export type { ReadinessStatus } from './domain.ts'
 
 export type AthleteReadinessSnapshot = {
   athleteCode: string
@@ -73,36 +76,6 @@ function normalizeSnapshot(
 
 function canUseLegacySnapshot(snapshot: AthleteReadinessSnapshot, athleteCode: string) {
   return !snapshot.athleteCode || snapshot.athleteCode === athleteCode
-}
-
-export function calculateReadiness(
-  readiness: Pick<
-    AthleteReadinessSnapshot,
-    'sleep' | 'energy' | 'soreness' | 'hydration' | 'selfReadiness' | 'stress' | 'painFlag'
-  >,
-): ReadinessResult {
-  const score = Math.round(
-    readiness.sleep * 0.2 * 20 +
-      readiness.energy * 0.2 * 20 +
-      (6 - readiness.soreness) * 0.2 * 20 +
-      readiness.hydration * 0.15 * 20 +
-      readiness.selfReadiness * 0.15 * 20 +
-      (6 - readiness.stress) * 0.1 * 20,
-  )
-
-  if (readiness.painFlag) {
-    return { score, status: 'RED' }
-  }
-
-  if (score >= 80) {
-    return { score, status: 'GREEN' }
-  }
-
-  if (score >= 60) {
-    return { score, status: 'YELLOW' }
-  }
-
-  return { score, status: 'RED' }
 }
 
 export function hasReadinessSnapshot(athleteCode: string): boolean {
