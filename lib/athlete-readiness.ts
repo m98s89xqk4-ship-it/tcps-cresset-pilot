@@ -1,237 +1,38 @@
-import type { ReadinessStatus } from './domain.ts'
+import type { ReadinessInput, ReadinessResult } from "@/lib/types";
 
-export { calculateReadiness } from './readiness.ts'
-export type { ReadinessStatus } from './domain.ts'
+const fivePoint = (value: number) => Math.max(1, Math.min(5, value));
 
-export type AthleteReadinessSnapshot = {
-  athleteCode: string
-  soreness: number
-  energy: number
-  sleep: number
-  hydration: number
-  stress: number
-  selfReadiness: number
-  painFlag: boolean
-  note?: string
-  recordedAt?: string
-}
-
-export type ReadinessResult = {
-  score: number
-  status: ReadinessStatus
-}
-
-export type TrainingDecision = {
-  objective: string
-  focusAreas: string[]
-  caposGuidance: Array<{
-    pillar: string
-    detail: string
-  }>
-  coachNote: string
-}
-
-const LEGACY_STORAGE_KEY = 'tcps-athlete-readiness'
-const SNAPSHOT_KEY_PREFIX = 'tcps-athlete-readiness'
-const HISTORY_KEY_PREFIX = 'tcps-athlete-readiness-history'
-const HISTORY_LIMIT = 30
-
-export const DEFAULT_READINESS: AthleteReadinessSnapshot = {
-  athleteCode: '',
-  soreness: 3,
-  energy: 3,
-  sleep: 3,
-  hydration: 3,
-  stress: 3,
-  selfReadiness: 3,
-  painFlag: false,
-  note: '',
-}
-
-function getDefaultReadiness(athleteCode = ''): AthleteReadinessSnapshot {
-  return {
-    ...DEFAULT_READINESS,
-    athleteCode,
+export function evaluateReadiness(input: ReadinessInput): ReadinessResult {
+  if (!input.present) {
+    return { score: 0, light: "red", suggestedStatus: "hold", reasons: ["Athlete is not present."] };
   }
-}
 
-function getSnapshotStorageKey(athleteCode: string) {
-  return `${SNAPSHOT_KEY_PREFIX}:${athleteCode}`
-}
-
-function getHistoryStorageKey(athleteCode: string) {
-  return `${HISTORY_KEY_PREFIX}:${athleteCode}`
-}
-
-function normalizeSnapshot(
-  snapshot: Partial<AthleteReadinessSnapshot>,
-  athleteCode = snapshot.athleteCode ?? '',
-): AthleteReadinessSnapshot {
-  return {
-    ...DEFAULT_READINESS,
-    ...snapshot,
-    athleteCode,
+  if (input.pain || input.medicalConcern) {
+    return {
+      score: 25,
+      light: "red",
+      suggestedStatus: "refer",
+      reasons: [input.pain ? "Pain was reported." : "A medical concern was reported.", "Stop activity and notify the appropriate adult or medical professional."]
+    };
   }
-}
 
-function canUseLegacySnapshot(snapshot: AthleteReadinessSnapshot, athleteCode: string) {
-  return snapshot.athleteCode === athleteCode
-}
+  const sorenessAsFive = [5, 4, 2.5, 1][Math.max(0, Math.min(3, input.soreness))];
+  const lowStressIsGood = 6 - fivePoint(input.stress);
+  const rawAverage = (input.ready + input.energy + input.sleep + input.hydration + sorenessAsFive + lowStressIsGood) / 6;
+  const score = Math.round(rawAverage * 20);
+  const reasons: string[] = [];
 
-export function hasReadinessSnapshot(athleteCode: string): boolean {
-  if (typeof window === 'undefined') return false
+  if (input.soreness >= 2) reasons.push("Soreness is elevated.");
+  if (input.sleep <= 2) reasons.push("Sleep rating is low.");
+  if (input.energy <= 2) reasons.push("Energy rating is low.");
+  if (input.hydration <= 2) reasons.push("Hydration rating is low.");
+  if (input.stress >= 4) reasons.push("Stress rating is elevated.");
 
-  try {
-    if (window.sessionStorage.getItem(getSnapshotStorageKey(athleteCode))) {
-      return true
-    }
-
-    const legacyValue = window.sessionStorage.getItem(LEGACY_STORAGE_KEY)
-
-    if (!legacyValue) {
-      return false
-    }
-
-    const legacySnapshot = normalizeSnapshot(JSON.parse(legacyValue))
-
-    return canUseLegacySnapshot(legacySnapshot, athleteCode)
-  } catch {
-    return false
+  if (score < 50 || input.soreness === 3) {
+    return { score, light: "red", suggestedStatus: "hold", reasons: reasons.length ? reasons : ["Readiness score is below the participation threshold."] };
   }
-}
-
-export function loadReadinessSnapshot(athleteCode: string): AthleteReadinessSnapshot {
-  if (typeof window === 'undefined') return getDefaultReadiness(athleteCode)
-
-  try {
-    const value = window.sessionStorage.getItem(getSnapshotStorageKey(athleteCode))
-
-    if (value) {
-      return normalizeSnapshot(JSON.parse(value), athleteCode)
-    }
-
-    const legacyValue = window.sessionStorage.getItem(LEGACY_STORAGE_KEY)
-
-    if (legacyValue) {
-      const legacySnapshot = normalizeSnapshot(JSON.parse(legacyValue))
-
-      if (canUseLegacySnapshot(legacySnapshot, athleteCode)) {
-        return normalizeSnapshot(legacySnapshot, athleteCode)
-      }
-    }
-
-    return getDefaultReadiness(athleteCode)
-  } catch {
-    return getDefaultReadiness(athleteCode)
+  if (score < 75 || reasons.length > 0) {
+    return { score, light: "yellow", suggestedStatus: "modified", reasons: reasons.length ? reasons : ["Readiness supports a modified session."] };
   }
-}
-
-export function saveReadinessSnapshot(snapshot: AthleteReadinessSnapshot) {
-  if (typeof window === 'undefined') return
-
-  try {
-    const normalizedSnapshot = normalizeSnapshot(snapshot, snapshot.athleteCode)
-    window.sessionStorage.setItem(
-      getSnapshotStorageKey(snapshot.athleteCode),
-      JSON.stringify(normalizedSnapshot),
-    )
-  } catch {
-    /* storage is optional */
-  }
-}
-
-export function loadReadinessHistory(athleteCode: string): AthleteReadinessSnapshot[] {
-  if (typeof window === 'undefined') return []
-
-  try {
-    const value = window.localStorage.getItem(getHistoryStorageKey(athleteCode))
-
-    if (!value) {
-      return []
-    }
-
-    const history = JSON.parse(value)
-
-    if (!Array.isArray(history)) {
-      return []
-    }
-
-    return history
-      .map((entry) => normalizeSnapshot(entry, athleteCode))
-      .filter((entry): entry is AthleteReadinessSnapshot & { recordedAt: string } => Boolean(entry.recordedAt))
-      .sort((left, right) => right.recordedAt.localeCompare(left.recordedAt))
-  } catch {
-    return []
-  }
-}
-
-export function saveReadinessHistory(snapshot: AthleteReadinessSnapshot): AthleteReadinessSnapshot[] {
-  if (typeof window === 'undefined') return []
-
-  try {
-    const entry = normalizeSnapshot(
-      {
-        ...snapshot,
-        recordedAt: snapshot.recordedAt ?? new Date().toISOString(),
-      },
-      snapshot.athleteCode,
-    )
-
-    const snapshotDay = entry.recordedAt?.slice(0, 10)
-    const history = loadReadinessHistory(snapshot.athleteCode)
-
-    const nextHistory = [
-      entry,
-      ...history.filter((historyEntry) => historyEntry.recordedAt?.slice(0, 10) !== snapshotDay),
-    ]
-      .sort((left, right) => (right.recordedAt ?? '').localeCompare(left.recordedAt ?? ''))
-      .slice(0, HISTORY_LIMIT)
-
-    window.localStorage.setItem(getHistoryStorageKey(snapshot.athleteCode), JSON.stringify(nextHistory))
-
-    return nextHistory
-  } catch {
-    return []
-  }
-}
-
-export function getTrainingDecision(status: ReadinessStatus): TrainingDecision {
-  switch (status) {
-    case 'GREEN':
-      return {
-        objective: 'Normal planned exposure',
-        focusAreas: ['Movement Efficiency', 'Explosive Power'],
-        caposGuidance: [
-          { pillar: 'Durability', detail: 'Complete standard foot/ankle, hip, and trunk prep.' },
-          { pillar: 'Repeatability', detail: 'Use normal planned volume and standard progressions.' },
-          { pillar: 'Movement Efficiency', detail: 'Attack quality movement at full training intent.' },
-          { pillar: 'Explosive Power', detail: 'Full jumping, sprinting, and explosive work is appropriate.' },
-        ],
-        coachNote: 'Train as planned and keep the quality standard high from start to finish.',
-      }
-    case 'YELLOW':
-      return {
-        objective: 'Modified training day',
-        focusAreas: ['Movement Efficiency', 'Durability'],
-        caposGuidance: [
-          { pillar: 'Durability', detail: 'Complete foot/ankle, hip, and trunk prep with extra warm-up time.' },
-          { pillar: 'Repeatability', detail: 'Reduce volume 20-30% while protecting movement quality.' },
-          { pillar: 'Movement Efficiency', detail: 'Emphasize movement quality over total reps.' },
-          { pillar: 'Explosive Power', detail: 'Use low-volume, high-quality explosive work only.' },
-        ],
-        coachNote: 'Train today, but protect tomorrow. Adjust volume and extend recovery.',
-      }
-    case 'RED':
-      return {
-        objective: 'Recovery and coach review',
-        focusAreas: ['Durability', 'Recovery Reset'],
-        caposGuidance: [
-          { pillar: 'Durability', detail: 'Use gentle mobility, breathing, and tissue-prep work only.' },
-          { pillar: 'Repeatability', detail: 'Pause normal loading and remove demanding volume for today.' },
-          { pillar: 'Movement Efficiency', detail: 'Keep all movement low intensity and pain free.' },
-          { pillar: 'Explosive Power', detail: 'Do not perform sprinting, jumping, or high-output work.' },
-        ],
-        coachNote: 'Recovery is required today. Coach review is required before returning to normal training.',
-      }
-  }
+  return { score, light: "green", suggestedStatus: "full", reasons: ["Readiness inputs support full participation with normal monitoring."] };
 }

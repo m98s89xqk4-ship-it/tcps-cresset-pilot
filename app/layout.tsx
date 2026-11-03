@@ -1,19 +1,19 @@
-import type { Metadata } from 'next'
-import './globals.css'
+import { schoolTitle } from "@/lib/school";
+import type { Metadata, Viewport } from "next";
+import "./globals.css";
 
 export const metadata: Metadata = {
-  title: 'TCPS - Athlete Readiness & Movement Intelligence',
-  description: 'TC Performance System - Cresset Christian Academy Pilot',
-}
+  title: schoolTitle,
+  description: "Deterministic athlete readiness, movement, training, recovery, and reflection workflow.",
+  manifest: "/manifest.webmanifest"
+};
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export const viewport: Viewport = { themeColor: "#6D1634", width: "device-width", initialScale: 1 };
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className="font-sans">{children}</body>
+      <body>{children}</body>
     </html>
-  )
+  );
 }
