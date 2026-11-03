@@ -1,52 +1,72 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
-import { calculateReadiness, loadReadinessSnapshot, saveReadinessHistory, saveReadinessSnapshot } from '@/lib/athlete-readiness'
+import {
+  DEFAULT_READINESS,
+  calculateReadiness,
+  loadReadinessSnapshot,
+  saveReadinessHistory,
+  saveReadinessSnapshot,
+  type AthleteReadinessSnapshot,
+} from '@/lib/athlete-readiness'
 
-interface ReadinessData { soreness: number; energy: number; sleepQuality: number; hydration: number; stress: number; selfReadiness: number; painFlag: boolean }
+type ReadinessData = Omit<AthleteReadinessSnapshot, 'athleteCode' | 'note' | 'recordedAt'>
+
+const DEFAULT_FORM_STATE: ReadinessData = {
+  soreness: DEFAULT_READINESS.soreness,
+  energy: DEFAULT_READINESS.energy,
+  sleep: DEFAULT_READINESS.sleep,
+  hydration: DEFAULT_READINESS.hydration,
+  stress: DEFAULT_READINESS.stress,
+  selfReadiness: DEFAULT_READINESS.selfReadiness,
+  painFlag: DEFAULT_READINESS.painFlag,
+}
 
 export default function ReadinessPage({ params }: { params: { athleteId: string } }) {
-  const [readiness, setReadiness] = useState<ReadinessData>({ soreness: 3, energy: 3, sleepQuality: 3, hydration: 3, stress: 3, selfReadiness: 3, painFlag: false })
-  const [loadedAthleteId, setLoadedAthleteId] = useState<string | null>(null)
+  const [readiness, setReadiness] = useState<ReadinessData>(DEFAULT_FORM_STATE)
+  const hasLoadedSnapshot = useRef(false)
+  const hasInitializedPersistence = useRef(false)
 
   useEffect(() => {
+    hasInitializedPersistence.current = false
     const saved = loadReadinessSnapshot(params.athleteId)
-    setReadiness({ soreness: saved.soreness, energy: saved.energy, sleepQuality: saved.sleep, hydration: saved.hydration, stress: saved.stress, selfReadiness: saved.selfReadiness, painFlag: saved.painFlag })
-    setLoadedAthleteId(params.athleteId)
+    setReadiness({
+      soreness: saved.soreness,
+      energy: saved.energy,
+      sleep: saved.sleep,
+      hydration: saved.hydration,
+      stress: saved.stress,
+      selfReadiness: saved.selfReadiness,
+      painFlag: saved.painFlag,
+    })
+    hasLoadedSnapshot.current = true
   }, [params.athleteId])
 
   useEffect(() => {
-    if (loadedAthleteId !== params.athleteId) return
+    if (!hasLoadedSnapshot.current) {
+      return
+    }
 
-    const snapshot = {
+    if (!hasInitializedPersistence.current) {
+      hasInitializedPersistence.current = true
+      return
+    }
+
+    const snapshot: AthleteReadinessSnapshot = {
       athleteCode: params.athleteId,
-      soreness: readiness.soreness,
-      energy: readiness.energy,
-      sleep: readiness.sleepQuality,
-      hydration: readiness.hydration,
-      stress: readiness.stress,
-      selfReadiness: readiness.selfReadiness,
-      painFlag: readiness.painFlag,
+      ...readiness,
       recordedAt: new Date().toISOString(),
     }
 
     saveReadinessSnapshot(snapshot)
     saveReadinessHistory(snapshot)
-  }, [loadedAthleteId, params.athleteId, readiness])
+  }, [params.athleteId, readiness])
 
-  const { score, status } = calculateReadiness({
-    soreness: readiness.soreness,
-    energy: readiness.energy,
-    sleep: readiness.sleepQuality,
-    hydration: readiness.hydration,
-    stress: readiness.stress,
-    selfReadiness: readiness.selfReadiness,
-    painFlag: readiness.painFlag,
-  })
+  const { score, status } = useMemo(() => calculateReadiness(readiness), [readiness])
   const color = status === 'GREEN' ? 'bg-green-600' : status === 'YELLOW' ? 'bg-yellow-600' : 'bg-red-600'
   const fields = [
-    ['Soreness', 'soreness'], ['Energy', 'energy'], ['Sleep Quality', 'sleepQuality'],
+    ['Soreness', 'soreness'], ['Energy', 'energy'], ['Sleep Quality', 'sleep'],
     ['Hydration', 'hydration'], ['Stress Level', 'stress'], ['Self Readiness', 'selfReadiness'],
   ] as const
 

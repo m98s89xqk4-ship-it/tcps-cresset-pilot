@@ -32,6 +32,7 @@ function formatHistoryDate(recordedAt?: string) {
 
 export default function HistoryPage({ params }: { params: { athleteId: string } }) {
   const [history, setHistory] = useState<HistoryEntry[]>([])
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
     const nextHistory = loadReadinessHistory(params.athleteId).map((entry) => ({
@@ -40,6 +41,7 @@ export default function HistoryPage({ params }: { params: { athleteId: string } 
     }))
 
     setHistory(nextHistory)
+    setIsLoaded(true)
   }, [params.athleteId])
 
   const recentHistory = useMemo(() => history.slice(0, 7), [history])
@@ -87,8 +89,12 @@ export default function HistoryPage({ params }: { params: { athleteId: string } 
             </div>
           )) : (
             <div className="tcps-panel p-5 text-center">
-              <p className="text-sm font-semibold text-gold mb-2">No readiness history yet</p>
-              <p className="text-sm text-white/80">Complete a readiness check-in to start tracking daily trends for this athlete code.</p>
+              <p className="text-sm font-semibold text-gold mb-2">
+                {isLoaded ? 'No readiness history yet' : 'Loading history...'}
+              </p>
+              <p className="text-sm text-white/80">
+                Complete a readiness check-in to start tracking daily trends for this athlete code.
+              </p>
             </div>
           )}
         </div>
