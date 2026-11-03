@@ -158,7 +158,7 @@ export default function CurriculumPage({ params }: { params: { athleteId: string
               </p>
               <div className="space-y-3">
                 <div>
-                  <p className="text-gold text-xs font-semibold mb-2">This Week's Challenge</p>
+                  <p className="text-gold text-xs font-semibold mb-2">This Week&apos;s Challenge</p>
                   <p className="text-white text-sm">
                     {session.number === 1 && 'Complete one recovery action after your next workout. Notice how it affects your next readiness score.'}
                     {session.number === 2 && 'Establish your movement baseline. Record your readiness score and describe how you are moving today.'}
@@ -182,7 +182,7 @@ export default function CurriculumPage({ params }: { params: { athleteId: string
 
             <div className="bg-green-900 bg-opacity-30 border border-green-600 border-opacity-50 rounded-lg p-4">
               <p className="text-green-200 font-semibold mb-2">✓ Your Task</p>
-              <p className="text-green-100 text-sm">Complete this week's challenge and be ready to share what you discovered with your coach or class.</p>
+              <p className="text-green-100 text-sm">Complete this week&apos;s challenge and be ready to share what you discovered with your coach or class.</p>
             </div>
           </div>
         )}

@@ -1,3 +1,5 @@
+import { calculateReadiness } from './readiness.ts'
+
 export type AthleteReadinessSnapshot = {
   athleteCode: string
   soreness: number
@@ -31,3 +33,5 @@ export function saveReadinessSnapshot(snapshot: AthleteReadinessSnapshot) {
   if (typeof window === 'undefined') return
   try { window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot)) } catch { /* storage is optional */ }
 }
+
+export { calculateReadiness }
