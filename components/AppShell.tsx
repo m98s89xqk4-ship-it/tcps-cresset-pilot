@@ -13,7 +13,10 @@ export function AppShell({ children, athleteId }: { children: React.ReactNode; a
               <span className="block text-xs text-white/70">{school.name} · {school.program}</span>
             </span>
           </Link>
+          <div className="flex items-center gap-2">
+          <a href="https://tcperformancesystem.com" target="_blank" rel="noreferrer" className="rounded-lg bg-tcps-gold px-3 py-2 text-sm font-bold text-tcps-ink hover:brightness-110">tcperformancesystem.com</a>
           <Link href="/coach" className="rounded-lg border border-white/30 px-3 py-2 text-sm font-bold hover:bg-white/10">Coach view</Link>
+          </div>
         </div>
       </header>
       {athleteId ? (
@@ -23,7 +26,7 @@ export function AppShell({ children, athleteId }: { children: React.ReactNode; a
       ) : null}
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">{children}</main>
       <footer className="mx-auto max-w-6xl px-4 pb-10 pt-4 text-center text-xs text-black/55 sm:px-6">
-        People make you powerful. Systems make people perform. · Coaching decision support only; not medical advice.
+        <a href="https://tcperformancesystem.com" target="_blank" rel="noreferrer" className="font-bold text-tcps-maroon underline">tcperformancesystem.com</a><br />People make you powerful. Systems make people perform. · Coaching decision support only; not medical advice.
       </footer>
     </div>
   );

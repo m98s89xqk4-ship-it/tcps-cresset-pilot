@@ -3,7 +3,7 @@
 A complete Next.js implementation of the TC Performance System athlete workflow:
 
 1. Readiness
-2. Coach-observed movement screen
+2. Coach view in a Google Sheet
 3. Deterministic training plan
 4. Recovery
 5. Reflection and UPP progression
