@@ -73,9 +73,7 @@ export async function POST(request: Request) {
     || body.movement.length > 80
     || typeof body.notes !== "string"
     || body.notes.length > 1500
-    || !images
     || !Array.isArray(images)
-    || images.length < 1
     || images.length > 4
     || images.some((image) => typeof image !== "string" || image.length > 1_500_000 || !/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(image))
     || !ratings
@@ -93,7 +91,9 @@ export async function POST(request: Request) {
   }
 
   const instructions = [
-    "Review the coach's movement-screen observations and the supplied still images. Video clips are represented by a few sampled still frames.",
+    images.length > 0
+      ? "Review the coach's movement-screen observations and the supplied still images. Video clips are represented by a few sampled still frames."
+      : "No photos or video frames were supplied. You cannot assess visible movement; base your response only on the coach's ratings and notes, explicitly state that visual assessment was not possible, and use coach_review unless the information warrants refer.",
     "This is limited coaching decision support, not medical screening, diagnosis, injury prediction, or clearance.",
     "Describe only visible movement observations. Do not infer a diagnosis or claim that an athlete is safe.",
     "Use low coach ratings as a reason for coach_review; do not treat high ratings or a good-looking image as proof of safety.",
@@ -183,6 +183,8 @@ export async function POST(request: Request) {
       ...(body.medicalConcern ? ["Coach identified a medical concern."] : [])
     ];
     result.referralReasons = [...new Set([...mandatoryReasons, ...result.referralReasons])].slice(0, 6);
+  } else if (images.length === 0 && result.riskLevel === "clear") {
+    result.riskLevel = "coach_review";
   }
 
   return NextResponse.json({ result });

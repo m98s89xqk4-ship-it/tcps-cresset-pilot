@@ -12,7 +12,7 @@ export default function CoachPage() {
       </div>
       <CoachScreening />
       {sheetUrl ? <iframe title="Coach Google Sheet" src={sheetUrl} className="mt-6 h-[75vh] w-full rounded-2xl border border-black/10 bg-white shadow-card" /> : <div className="card mt-6">Set <code>NEXT_PUBLIC_COACH_SHEET_URL</code> to the Google Sheet link (see google-sheet/Code.gs for setup).</div>}
-      <aside className="mt-5 rounded-2xl border border-tcps-gold/60 bg-[#fffaf0] p-4 text-sm leading-6"><strong>Pilot privacy:</strong> use non-sensitive athlete codes and restrict sheet sharing to coaches. Uploaded photos and selected video frames are sent to OpenAI for the requested screen and are not saved by this app. Obtain required permission before submitting. Screening decisions are stored in this browser, so coach and athlete must use the same browser profile; the shared access code is not individual coach authentication.</aside>
+      <aside className="mt-5 rounded-2xl border border-tcps-gold/60 bg-[#fffaf0] p-4 text-sm leading-6"><strong>Pilot privacy:</strong> use non-sensitive athlete codes and restrict sheet sharing to coaches. If provided, photos and selected video frames are sent to OpenAI for the requested screen and are not saved by this app. Obtain required permission before submitting. Screening decisions are stored in this browser, so coach and athlete must use the same browser profile; the shared access code is not individual coach authentication.</aside>
     </AppShell>
   );
 }

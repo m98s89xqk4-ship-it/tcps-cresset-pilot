@@ -8,7 +8,7 @@ A complete Next.js implementation of the TC Performance System athlete workflow:
 4. Recovery
 5. Reflection and UPP progression
 
-The AI screen summarizes visible movement observations from coach-selected photos or sampled video frames and coach-entered information. It is decision support only: it does not diagnose, predict injury, or clear athletes. A coach must record a decision before the training plan can proceed; an AI referral flag restricts the available coach decisions to Hold or Refer.
+The AI screen summarizes coach-entered information and, when provided, visible movement observations from coach-selected photos or sampled video frames. Media is optional; without it, visual movement cannot be assessed and the result requires coach review unless referral is warranted. It is decision support only: it does not diagnose, predict injury, or clear athletes. A coach must record a decision before the training plan can proceed; an AI referral flag restricts the available coach decisions to Hold or Refer.
 
 ## Configure AI screening
 
@@ -51,7 +51,7 @@ npm run build
 
 - Readiness score combines ready, energy, soreness, sleep, hydration, and stress.
 - Pain or a medical concern immediately produces a red Hold/Refer result.
-- The coach enters movement ratings for control, alignment, balance, and usable range; AI adds non-diagnostic observations from selected media and notes.
+- The coach enters movement ratings for control, alignment, balance, and usable range; media is optional, and AI adds non-diagnostic observations from selected media (when provided) and notes.
 - Pain or a medical concern, or an AI referral flag, restricts the coach decision to Hold or Refer.
 - The training plan uses the most restrictive readiness, movement, or coach decision.
 - A coach may make participation more restrictive, never less restrictive.
@@ -71,7 +71,7 @@ Core files:
 This pilot stores athlete records and screening results in the current browser using `localStorage`; it does not provide a shared database or authenticated accounts.
 
 - Use athlete codes instead of full legal names.
-- Only after the coach confirms permission, selected photos and coach-entered screening details are sent to OpenAI for analysis. Video is sampled into three still frames in the browser; the video itself is not uploaded.
+- Only after the coach confirms permission, coach-entered screening details and any selected photos are sent to OpenAI for analysis. Video is sampled into three still frames in the browser; the video itself is not uploaded. Without media, the AI cannot assess visible movement and the result requires coach review unless referral is warranted.
 - The app does not save the selected photos, video, or extracted frames. AI results and coach notes are saved in that browser's local storage.
 - The coach and athlete must use the same browser profile for a coach decision to affect the athlete's plan; this pilot does not sync screenings across devices.
 - Review school/provider privacy requirements and obtain any required consent before sending athlete media or information to OpenAI. Avoid faces, names, uniforms, and other identifying details.

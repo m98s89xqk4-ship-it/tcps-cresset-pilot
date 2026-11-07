@@ -80,7 +80,8 @@ async function videoToJpegs(file: File) {
 }
 
 async function mediaToImages(files: File[]) {
-  if (files.length === 0 || files.length > 4) throw new Error("Choose one to four photos or a short video.");
+  if (files.length === 0) return [];
+  if (files.length > 4) throw new Error("Choose up to four photos or a short video.");
   const videos = files.filter((file) => file.type.startsWith("video/"));
   if (videos.length > 1) throw new Error("Choose one video clip at a time.");
   if (files.some((file) => file.size > 30 * 1024 * 1024)) throw new Error("Each media file must be 30 MB or smaller.");
@@ -307,18 +308,18 @@ export function CoachScreening() {
         </div>
 
         <div>
-          <label className="label" htmlFor="screen-media">Photos or a short video</label>
+          <label className="label" htmlFor="screen-media">Photos or a short video (optional)</label>
           <input id="screen-media" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm" multiple className="field" onChange={updateMedia} />
-          <p className="mt-1 text-xs leading-5 text-black/55">Choose up to four images or frames; videos are limited to 30 seconds and converted to three still frames in this browser. The video itself is not uploaded or saved.</p>
+          <p className="mt-1 text-xs leading-5 text-black/55">You can continue without uploading photos or video; the screen will use the ratings and notes you entered and will require coach review. If provided, choose up to four images or frames; videos are limited to 30 seconds and converted to three still frames in this browser. The video itself is not uploaded or saved.</p>
         </div>
 
         <label className="flex items-start gap-3 rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm leading-6 text-amber-950">
           <input type="checkbox" required className="mt-1 size-5 shrink-0" checked={consentConfirmed} onChange={(event) => setConsentConfirmed(event.target.checked)} />
-          I have confirmed required permission for the coach notes and selected images/frames to be sent to OpenAI for this screening. I have removed names, faces, uniforms, and other identifying details.
+          I have confirmed required permission for the coach notes and any selected images/frames to be sent to OpenAI for this screening. I have removed names, faces, uniforms, and other identifying details.
         </label>
 
         <button className="btn-primary w-full" type="submit" disabled={busy}>
-          {busy ? "Preparing media and screening..." : "Run AI-assisted screen"}
+          {busy ? "Preparing screening..." : "Run AI-assisted screen"}
         </button>
       </form>
 
