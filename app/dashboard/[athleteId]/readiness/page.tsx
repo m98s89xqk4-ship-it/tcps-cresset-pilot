@@ -8,7 +8,9 @@ import { AppShell } from "@/components/AppShell";
 import { FlowNav } from "@/components/FlowNav";
 import { ScaleInput } from "@/components/ScaleInput";
 import { evaluateReadiness } from "@/lib/athlete-readiness";
+import { syncToSheet } from "@/lib/sheet";
 import { loadRecord, saveRecord } from "@/lib/storage";
+import { createTrainingPlan } from "@/lib/training-engine";
 import type { ReadinessInput } from "@/lib/types";
 
 const initial: ReadinessInput = { present: true, ready: 3, energy: 3, soreness: 0, sleep: 3, hydration: 3, stress: 3, pain: false, medicalConcern: false, note: "", createdAt: "" };
@@ -23,8 +25,11 @@ export default function ReadinessPage() {
   function submit(event: FormEvent) {
     event.preventDefault();
     const record = loadRecord(params.athleteId);
-    saveRecord({ ...record, readiness: { ...form, createdAt: new Date().toISOString() }, plan: undefined });
-    router.push(`/dashboard/${params.athleteId}/movement`);
+    const readiness = { ...form, createdAt: new Date().toISOString() };
+    const plan = createTrainingPlan({ athleteId: params.athleteId, readinessInput: readiness, sessionId: record.plan?.sessionId ?? 1 });
+    saveRecord({ ...record, readiness, plan });
+    void syncToSheet("readiness", params.athleteId, { status: plan.approvedStatus, light: plan.overallLight, score: plan.readiness.score, reasons: plan.readiness.reasons, note: readiness.note });
+    router.push(`/dashboard/${params.athleteId}/training`);
   }
 
   return (
@@ -45,7 +50,7 @@ export default function ReadinessPage() {
             <label className="flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-3 font-bold text-red-900"><input type="checkbox" checked={form.medicalConcern} onChange={(event) => setForm({ ...form, medicalConcern: event.target.checked })} className="size-5" />Medical concern</label>
           </div>
           <div><label className="label" htmlFor="note">Optional note</label><textarea id="note" className="field min-h-24" value={form.note} onChange={(event) => setForm({ ...form, note: event.target.value })} placeholder="What should the coach know?" /></div>
-          <button className="btn-primary w-full" type="submit">Save and continue to movement</button>
+          <button className="btn-primary w-full" type="submit">Sign in and get today’s plan</button>
         </form>
         <aside className="card h-fit lg:sticky lg:top-4"><p className="eyebrow">Rules preview</p><div className={`mt-3 rounded-2xl p-5 ${result.light === "green" ? "bg-emerald-50" : result.light === "yellow" ? "bg-amber-50" : "bg-red-50"}`}><div className="text-4xl font-black">{result.score}</div><div className="mt-1 font-black uppercase">{result.light} · {result.suggestedStatus}</div></div><ul className="mt-4 space-y-2 text-sm text-black/65">{result.reasons.map((reason) => <li key={reason}>• {reason}</li>)}</ul></aside>
       </div>

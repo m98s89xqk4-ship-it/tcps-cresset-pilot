@@ -33,6 +33,8 @@ const power: Record<MovementPriority, string[]> = {
   general: ["Medicine-ball throw", "Jump-and-stick", "Short acceleration"]
 };
 
+const defaultMovement: MovementScreen = { movementId: "none", control: 5, alignment: 5, balance: 5, usableRange: 5, priority: "general", observations: [], coachNote: "", createdAt: "" };
+
 function mostRestrictive(a: TrafficLight, b: TrafficLight): TrafficLight {
   return rank[a] >= rank[b] ? a : b;
 }
@@ -93,18 +95,20 @@ function makeBlocks(light: TrafficLight, priority: MovementPriority, objective: 
 export function createTrainingPlan(args: {
   athleteId: string;
   readinessInput: ReadinessInput;
-  movementInput: MovementScreen;
+  movementInput?: MovementScreen;
   sessionId: number;
-  coachStatus: ParticipationStatus;
-  coachApproved: boolean;
-  coachName: string;
+  coachStatus?: ParticipationStatus;
+  coachApproved?: boolean;
+  coachName?: string;
 }): TrainingPlan {
+  const movementInput = args.movementInput ?? defaultMovement;
+  const coachStatus = args.coachStatus ?? "full";
   const readiness = evaluateReadiness(args.readinessInput);
-  const movement = evaluateMovement(args.movementInput);
+  const movement = evaluateMovement(movementInput);
   const session = getSession(args.sessionId);
   const initialLight = mostRestrictive(readiness.light, movement.light);
-  const overallLight = applyCoachStatus(initialLight, args.coachStatus);
-  const approvedStatus = overallLight === "red" ? (args.coachStatus === "refer" || readiness.suggestedStatus === "refer" ? "refer" : "hold") : overallLight === "yellow" ? "modified" : "full";
+  const overallLight = applyCoachStatus(initialLight, coachStatus);
+  const approvedStatus = overallLight === "red" ? (coachStatus === "refer" || readiness.suggestedStatus === "refer" ? "refer" : "hold") : overallLight === "yellow" ? "modified" : "full";
   const uppStage = Math.min(9, Math.max(0, args.sessionId - 1));
 
   return {
@@ -120,8 +124,8 @@ export function createTrainingPlan(args: {
     safetyNote: overallLight === "red"
       ? "This tool does not diagnose or clear an athlete. Stop activity and follow school, parent/guardian, athletic trainer, and medical procedures."
       : "This plan is coaching decision support, not medical advice. Pain or worsening symptoms override the plan.",
-    blocks: makeBlocks(overallLight, args.movementInput.priority, session.objective, session.apply),
-    coachApproved: args.coachApproved,
-    coachName: args.coachName
+    blocks: makeBlocks(overallLight, movementInput.priority, session.objective, session.apply),
+    coachApproved: args.coachApproved ?? false,
+    coachName: args.coachName ?? ""
   };
 }

@@ -15,11 +15,10 @@ export default function AthleteDashboard() {
   useEffect(() => setRecord(loadRecord(params.athleteId)), [params.athleteId]);
 
   const steps = [
-    ["readiness", "1. Readiness", "Daily energy, soreness, sleep, hydration, stress, and safety flags.", Boolean(record.readiness)],
-    ["movement", "2. Movement", "Coach-scored baseline observation; optional local photo for reference.", Boolean(record.movement)],
-    ["training", "3. Train / Apply", "Deterministic plan based on the most restrictive available signal.", Boolean(record.plan)],
-    ["recovery", "4. Recover", "Close the session with downshift, hydration, and recovery action.", Boolean(record.recovery)],
-    ["reflect", "5. Reflect", "Record the win, lesson, next action, and UPP progression.", Boolean(record.reflection)]
+    ["readiness", "1. Sign in / Readiness", "Sign in and check energy, soreness, sleep, hydration, stress, and safety flags.", Boolean(record.readiness)],
+    ["training", "2. Train", "Today’s plan, set automatically from your readiness.", Boolean(record.plan)],
+    ["recovery", "3. Recover", "Close the session with downshift, hydration, and recovery action.", Boolean(record.recovery)],
+    ["reflect", "4. Reflect", "Record the win, lesson, next action, and UPP progression.", Boolean(record.reflection)]
   ] as const;
 
   return (
@@ -28,7 +27,7 @@ export default function AthleteDashboard() {
         <div><p className="eyebrow">Complete athlete flow</p><h1 className="mt-2 text-3xl font-black text-tcps-maroon sm:text-4xl">Today’s operating system</h1></div>
         {record.plan ? <StatusBadge light={record.plan.overallLight} /> : null}
       </div>
-      <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {steps.map(([href, title, body, complete]) => (
           <Link key={href} href={`/dashboard/${params.athleteId}/${href}`} className="card group hover:border-tcps-maroon/40">
             <div className="flex items-start justify-between gap-3"><h2 className="text-lg font-black group-hover:text-tcps-maroon">{title}</h2><span className={`rounded-full px-2 py-1 text-[10px] font-black uppercase ${complete ? "bg-emerald-100 text-emerald-800" : "bg-black/5 text-black/55"}`}>{complete ? "Saved" : "Open"}</span></div>
