@@ -21,9 +21,9 @@ export default function HomePage() {
         <div>
           <p className="eyebrow">{school.name} · {school.program}</p>
           <h1 className="mt-3 max-w-3xl text-4xl font-black leading-tight text-tcps-maroon sm:text-6xl">A complete athlete service, built for coach-led training.</h1>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-black/70">The current pilot uses coach-reviewed rules for readiness, training, recovery, and reflection. AI-assisted capabilities are planned for a future release.</p>
+          <p className="mt-5 max-w-2xl text-lg leading-8 text-black/70">Coaches review AI-assisted movement observations, make referral decisions, and approve training plans. AI suggestions never diagnose or clear an athlete.</p>
           <div className="mt-6 flex flex-wrap gap-2 text-sm font-bold">
-            {['No API keys', 'No image upload', 'Coach approval', 'Local pilot storage'].map((item) => <span key={item} className="rounded-full border border-tcps-gold/60 bg-white px-3 py-1.5">{item}</span>)}
+            {['Coach decision required', 'Referral-aware plans', 'Media not saved by app', 'Local pilot storage'].map((item) => <span key={item} className="rounded-full border border-tcps-gold/60 bg-white px-3 py-1.5">{item}</span>)}
           </div>
         </div>
         <form onSubmit={start} className="card">

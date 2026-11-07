@@ -16,9 +16,17 @@ const { createTrainingPlan } = load('@/lib/training-engine');
 const base = {
  athleteId: 'test-01', sessionId: 1, coachStatus: 'full', coachApproved: true, coachName: 'Test Coach',
  readinessInput: { present: true, pain: false, medicalConcern: false, ready: 5, energy: 5, sleep: 5, hydration: 5, soreness: 0, stress: 1 },
- movementInput: { control: 5, alignment: 5, balance: 5, usableRange: 5, observations: [], priority: 'general' }
+ movementInput: { movementId: 'squat', control: 5, alignment: 5, balance: 5, usableRange: 5, observations: [], priority: 'general', coachNote: '', createdAt: '' },
+ screening: {
+  movement: { movementId: 'squat', control: 5, alignment: 5, balance: 5, usableRange: 5, observations: [], priority: 'general', coachNote: '', createdAt: '' },
+  aiReview: { riskLevel: 'clear', summary: 'No specific concern observed.', observations: [], referralReasons: [], nextSteps: [] },
+  coachDecision: 'full', coachName: 'Test Coach', decisionAt: ''
+ }
 };
 assert.equal(createTrainingPlan(base).approvedStatus, 'full');
+assert.equal(createTrainingPlan({...base, screening: undefined}).approvedStatus, 'hold');
+assert.equal(createTrainingPlan({...base, screening: {...base.screening, aiReview: {...base.screening.aiReview, riskLevel: 'refer'}}}).approvedStatus, 'hold');
+assert.equal(createTrainingPlan({...base, screening: {...base.screening, aiReview: {...base.screening.aiReview, riskLevel: 'refer'}, coachDecision: 'refer'}}).approvedStatus, 'refer');
 for (const flag of ['pain','medicalConcern']) {
  const plan = createTrainingPlan({...base, readinessInput: {...base.readinessInput, [flag]: true}});
  assert.equal(plan.approvedStatus, 'refer'); assert.equal(plan.blocks.length, 1); assert.equal(plan.blocks[0].name, 'Hold / Refer');
@@ -26,8 +34,8 @@ for (const flag of ['pain','medicalConcern']) {
 assert.equal(createTrainingPlan({...base, readinessInput: {...base.readinessInput, present: false}}).approvedStatus, 'hold');
 assert.equal(createTrainingPlan({...base, coachStatus: 'modified'}).approvedStatus, 'modified');
 assert.equal(createTrainingPlan({...base, coachStatus: 'hold'}).approvedStatus, 'hold');
-assert.equal(createTrainingPlan({...base, movementInput: {...base.movementInput, control: 1, alignment: 1, balance: 1, usableRange: 1}}).approvedStatus, 'hold');
-console.log('PASS: 7 training-rule scenarios, including pain, medical concern, absence, and restrictive coach decisions.');
+assert.equal(createTrainingPlan({...base, screening: {...base.screening, movement: {...base.screening.movement, control: 1, alignment: 1, balance: 1, usableRange: 1}}}).approvedStatus, 'hold');
+console.log('PASS: 10 training-rule scenarios, including screening gates, pain, medical concern, absence, and restrictive coach decisions.');
 process.env.NEXT_PUBLIC_SCHOOL_ID = 'test-academy';
 process.env.NEXT_PUBLIC_SCHOOL_NAME = 'Test Academy';
 process.env.NEXT_PUBLIC_PROGRAM_NAME = 'Performance Lab';

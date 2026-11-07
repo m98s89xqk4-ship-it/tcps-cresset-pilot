@@ -47,6 +47,22 @@ export interface MovementResult {
   reasons: string[];
 }
 
+export interface AiMovementScreening {
+  riskLevel: "clear" | "coach_review" | "refer";
+  summary: string;
+  observations: string[];
+  referralReasons: string[];
+  nextSteps: string[];
+}
+
+export interface CoachScreening {
+  movement: MovementScreen;
+  aiReview: AiMovementScreening;
+  coachDecision: ParticipationStatus | null;
+  coachName: string;
+  decisionAt: string | null;
+}
+
 export interface TrainingBlock {
   name: string;
   purpose: string;
@@ -90,6 +106,7 @@ export interface AthleteRecord {
   athleteId: string;
   readiness?: ReadinessInput;
   movement?: MovementScreen;
+  screening?: CoachScreening;
   plan?: TrainingPlan;
   recovery?: RecoveryEntry;
   reflection?: ReflectionEntry;

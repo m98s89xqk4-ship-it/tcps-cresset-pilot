@@ -26,7 +26,7 @@ export default function ReadinessPage() {
     event.preventDefault();
     const record = loadRecord(params.athleteId);
     const readiness = { ...form, createdAt: new Date().toISOString() };
-    const plan = createTrainingPlan({ athleteId: params.athleteId, readinessInput: readiness, sessionId: record.plan?.sessionId ?? 1 });
+    const plan = createTrainingPlan({ athleteId: params.athleteId, readinessInput: readiness, screening: record.screening, movementInput: record.movement, sessionId: record.plan?.sessionId ?? 1 });
     saveRecord({ ...record, readiness, plan });
     void syncToSheet("readiness", params.athleteId, { status: plan.approvedStatus, light: plan.overallLight, score: plan.readiness.score, reasons: plan.readiness.reasons, note: readiness.note });
     router.push(`/dashboard/${params.athleteId}/training`);

@@ -1,7 +1,7 @@
 import { evaluateReadiness } from "@/lib/athlete-readiness";
 import { getSession } from "@/lib/curriculum";
 import { evaluateMovement } from "@/lib/movement-assessment";
-import type { MovementPriority, MovementScreen, ParticipationStatus, ReadinessInput, TrafficLight, TrainingBlock, TrainingPlan } from "@/lib/types";
+import type { CoachScreening, MovementPriority, MovementScreen, ParticipationStatus, ReadinessInput, TrafficLight, TrainingBlock, TrainingPlan } from "@/lib/types";
 
 const rank: Record<TrafficLight, number> = { green: 0, yellow: 1, red: 2 };
 const statusRank: Record<ParticipationStatus, number> = { full: 0, modified: 1, hold: 2, refer: 3 };
@@ -96,13 +96,24 @@ export function createTrainingPlan(args: {
   athleteId: string;
   readinessInput: ReadinessInput;
   movementInput?: MovementScreen;
+  screening?: CoachScreening;
   sessionId: number;
   coachStatus?: ParticipationStatus;
   coachApproved?: boolean;
   coachName?: string;
 }): TrainingPlan {
-  const movementInput = args.movementInput ?? defaultMovement;
-  const coachStatus = args.coachStatus ?? "full";
+  const movementInput = args.screening?.movement ?? args.movementInput ?? defaultMovement;
+  const recordedDecision = args.screening?.coachDecision ?? null;
+  const referralDecisionPending = args.screening?.aiReview.riskLevel === "refer"
+    && recordedDecision !== "hold"
+    && recordedDecision !== "refer";
+  const screeningPending = !recordedDecision || referralDecisionPending;
+  const requestedCoachStatus = args.coachStatus ?? recordedDecision ?? "hold";
+  const coachStatus = screeningPending
+    ? "hold"
+    : statusRank[requestedCoachStatus] >= statusRank[recordedDecision ?? "hold"]
+      ? requestedCoachStatus
+      : recordedDecision ?? "hold";
   const readiness = evaluateReadiness(args.readinessInput);
   const movement = evaluateMovement(movementInput);
   const session = getSession(args.sessionId);

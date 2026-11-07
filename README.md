@@ -3,12 +3,22 @@
 A complete Next.js implementation of the TC Performance System athlete workflow:
 
 1. Readiness
-2. Coach view in a Google Sheet
-3. Deterministic training plan
+2. Coach AI-assisted movement screen and referral decision
+3. Coach-reviewed deterministic training plan
 4. Recovery
 5. Reflection and UPP progression
 
-This pilot currently uses a readable, auditable rules engine and coach-controlled decisions. AI-assisted capabilities are planned for a future release; the current workflow requires no API key or image analysis.
+The AI screen summarizes visible movement observations from coach-selected photos or sampled video frames and coach-entered information. It is decision support only: it does not diagnose, predict injury, or clear athletes. A coach must record a decision before the training plan can proceed; an AI referral flag restricts the available coach decisions to Hold or Refer.
+
+## Configure AI screening
+
+Set these server-side environment variables in the deployment platform (or in a local `.env.local` file):
+
+- `OPENAI_API_KEY`: a private OpenAI API key.
+- `AI_SCREENING_ACCESS_CODE`: a shared coach access code at least 16 characters long. This is a basic gate, not individual authentication.
+- `OPENAI_MODEL`: optional; defaults to `gpt-6-astra`.
+
+Never put these values in `NEXT_PUBLIC_*` variables, source control, or client-side code. Do not deploy the screening endpoint publicly without access controls appropriate for the school.
 
 ## Run locally
 
@@ -18,6 +28,7 @@ npm run dev
 ```
 
 Open <http://localhost:3000>.
+Configure `OPENAI_API_KEY` and `AI_SCREENING_ACCESS_CODE` in `.env.local` to enable coach screening; see [Configure AI screening](#configure-ai-screening).
 
 ## Verify
 
@@ -34,13 +45,14 @@ npm run build
 3. Import the repository in Vercel.
 4. Keep the detected framework as **Next.js** and deploy.
 
-No secrets are required. `NEXT_PUBLIC_PILOT_NAME` is optional.
+`NEXT_PUBLIC_PILOT_NAME` is optional.
 
 ## How the rules work
 
 - Readiness score combines ready, energy, soreness, sleep, hydration, and stress.
 - Pain or a medical concern immediately produces a red Hold/Refer result.
-- Movement is manually rated by a coach for control, alignment, balance, and usable range.
+- The coach enters movement ratings for control, alignment, balance, and usable range; AI adds non-diagnostic observations from selected media and notes.
+- Pain or a medical concern, or an AI referral flag, restricts the coach decision to Hold or Refer.
 - The training plan uses the most restrictive readiness, movement, or coach decision.
 - A coach may make participation more restrictive, never less restrictive.
 - Training blocks cover Prepare, Movement Development, Strength, Explosive Power, and Recover + Learn.
@@ -56,14 +68,18 @@ Core files:
 
 ## Pilot data and privacy
 
-This version stores records in the current browser using `localStorage`. It is intentionally simple so TCPS can test the workflow without hosting credentials or third-party services.
+This pilot stores athlete records and screening results in the current browser using `localStorage`; it does not provide a shared database or authenticated accounts.
 
 - Use athlete codes instead of full legal names.
-- Optional movement photos are temporary browser previews. They are not uploaded, analyzed, or saved.
+- Only after the coach confirms permission, selected photos and coach-entered screening details are sent to OpenAI for analysis. Video is sampled into three still frames in the browser; the video itself is not uploaded.
+- The app does not save the selected photos, video, or extracted frames. AI results and coach notes are saved in that browser's local storage.
+- The coach and athlete must use the same browser profile for a coach decision to affect the athlete's plan; this pilot does not sync screenings across devices.
+- Review school/provider privacy requirements and obtain any required consent before sending athlete media or information to OpenAI. Avoid faces, names, uniforms, and other identifying details.
+- The coach access code is shared and does not provide individual identity, roles, or a full authentication system.
 - Clearing browser data deletes the pilot records.
 - This is not a district system of record.
 
-Before production use across devices, add authenticated storage, documented consent, role-based access, audit logs, retention rules, data export/deletion procedures, and the school’s required privacy/security review.
+Before production use across devices, add authenticated storage, individual role-based access, audit logs, retention rules, data export/deletion procedures, and the school’s required privacy/security review.
 
 ## Medical and coaching boundary
 

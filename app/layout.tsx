@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: schoolTitle,
-  description: "Deterministic athlete readiness, movement, training, recovery, and reflection workflow.",
+  description: "Coach-reviewed AI movement screening and athlete readiness, training, recovery, and reflection workflow.",
   manifest: "/manifest.webmanifest"
 };
 
