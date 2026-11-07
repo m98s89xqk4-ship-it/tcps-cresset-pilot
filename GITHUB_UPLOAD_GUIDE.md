@@ -1,7 +1,7 @@
 # Publish the TCPS Cresset pilot
 
 ## What this package publishes
-A working browser-local pilot with readiness, movement screening, training plans, recovery, reflection, and a coach roster. No AI service or API key is required. This does not include student login, a shared database, or cross-device syncing. Coach approval is a workflow checkbox, not authenticated access control. Anyone using the same browser profile can access its saved records.
+A working browser-local pilot with readiness, movement screening, training plans, recovery, reflection, and a coach roster. The current workflow uses coach-reviewed rules and requires no API key; AI-assisted capabilities are planned for a future release. This does not include student login, a shared database, or cross-device syncing. Coach approval is a workflow checkbox, not authenticated access control. Anyone using the same browser profile can access its saved records.
 
 ## 1. Upload the source to GitHub
 1. Extract this ZIP on a computer.

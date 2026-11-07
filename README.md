@@ -1,4 +1,4 @@
-# TCPS Cresset Complete Athlete Pilot — No AI
+# TCPS Cresset Complete Athlete Pilot
 
 A complete Next.js implementation of the TC Performance System athlete workflow:
 
@@ -8,7 +8,7 @@ A complete Next.js implementation of the TC Performance System athlete workflow:
 4. Recovery
 5. Reflection and UPP progression
 
-The app does **not** call OpenAI or any other AI service. It has no AI dependency, no image-analysis endpoint, and requires no API key. The rules engine in `lib/` is readable, auditable, and coach-controlled.
+This pilot currently uses a readable, auditable rules engine and coach-controlled decisions. AI-assisted capabilities are planned for a future release; the current workflow requires no API key or image analysis.
 
 ## Run locally
 
@@ -71,14 +71,14 @@ The application supports coaching decisions. It does not diagnose injuries, pred
 
 ## Existing TCPS repository merge
 
-If the existing project already contains the officially approved `lib/curriculum.ts`, keep that file and merge the remaining no-AI code around it. The included curriculum file is a complete fallback for a standalone build.
+If the existing project already contains the officially approved `lib/curriculum.ts`, keep that file and merge the remaining pilot code around it. The included curriculum file is a complete fallback for a standalone build.
 
 ## GitHub commands
 
 ```bash
 git init
 git add .
-git commit -m "Build TCPS Cresset pilot without AI services"
+git commit -m "Build TCPS Cresset athlete pilot"
 git branch -M main
 git remote add origin https://github.com/YOUR-USERNAME/YOUR-REPOSITORY.git
 git push -u origin main
