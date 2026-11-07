@@ -6,7 +6,7 @@ const config: Config = {
     extend: {
       colors: {
         tcps: {
-          maroon: "#6D1634",
+          maroon: "#0B5D3B",
           gold: "#D7A83D",
           ink: "#141414",
           cream: "#FBF7EF"

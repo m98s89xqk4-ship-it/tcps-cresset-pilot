@@ -41,7 +41,7 @@ function getSheet() {
   if (sheet.getLastRow() === 0) {
     sheet.appendRow(HEADERS);
     sheet.setFrozenRows(1);
-    sheet.getRange(1, 1, 1, HEADERS.length).setFontWeight("bold").setBackground("#6b1f2a").setFontColor("#ffffff");
+    sheet.getRange(1, 1, 1, HEADERS.length).setFontWeight("bold").setBackground("#0B5D3B").setFontColor("#ffffff");
     sheet.getRange(2, 16, 500, 1).setDataValidation(
       SpreadsheetApp.newDataValidation().requireValueInList(["Full", "Modified", "Hold", "Refer"], true).build());
   }
